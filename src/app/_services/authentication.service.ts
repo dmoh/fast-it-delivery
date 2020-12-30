@@ -1,4 +1,8 @@
 import { Injectable } from '@angular/core';
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {map} from "rxjs/operators";
+import jwt_decode from "jwt-decode";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
