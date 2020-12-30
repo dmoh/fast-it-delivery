@@ -1,0 +1,44 @@
+<!--<ion-header>
+  <ion-toolbar>
+    <ion-title>login</ion-title>
+  </ion-toolbar>
+</ion-header>-->
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <div class="ion-text-center">
+          <ion-img [src]="imgLogo" alt="logo fast-it"></ion-img>
+          <h1>LIVREUR</h1>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Email</ion-label>
+          <ion-input [(ngModel)]="email"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Mot de passe</ion-label>
+          <ion-input [(ngModel)]="password" type="password"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-text class="ion-color-danger" *ngIf="error && error.length > 3">{{ error }}</ion-text>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="onSubmit()" size="large">Se connecter</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
