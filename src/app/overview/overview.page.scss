@@ -1,0 +1,26 @@
+ion-toggle {
+  --background: #D3D3D3;
+  --background-checked: #5cb85c;
+
+  --handle-background: #5cb85c;
+  --handle-background-checked: #D3D3D3;
+}
+
+
+ion-toggle {
+  width: 80px;
+}
+
+ion-toggle {
+  height: 40px;
+}
+ion-toggle {
+  --handle-spacing: 2px;
+  --handle-height: 98%;
+  --handle-width: 48%;
+}
+
+img {
+  max-width: 50%;
+  height: auto;
+}

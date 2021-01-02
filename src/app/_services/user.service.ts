@@ -33,7 +33,6 @@ export class UserService {
   getUserAddresses(): Observable<any> {
     return this.http.get<any>(`${this.urlApi}/user/address`, this.headers);
   }
-
   getRestaurantIdByUsername(username: string): Observable<any> {
     return this.http.post<any>(`${this.urlApi}/user/restaurant`, {email: username},this.headers);
   }
