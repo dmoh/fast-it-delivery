@@ -28,6 +28,8 @@ export class LoginPage implements OnInit {
           }
         else {this.error = "Vous n'avez pas de profil Livreur"}
         });
+
+
   }
 
 }

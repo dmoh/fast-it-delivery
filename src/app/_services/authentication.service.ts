@@ -10,6 +10,10 @@ import {environment} from "../../environments/environment";
 export class AuthenticationService {
 
   constructor(private http: HttpClient) { }
+
+  public get tokenUserCurrent(): string {
+        return; // this.currentUserSubject.value.token;
+    }
   login(email: string, password: string) {
     const optionRequete = {
       headers: new HttpHeaders({
