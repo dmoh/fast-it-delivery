@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+      <ion-title style="font-size: 100%">
+      DETAIL COMMANDE
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+      <ion-item-group *ngFor="let order of orders">
+
+      <ion-item-divider>
+          <ion-label>COMMERCANT</ion-label>
+      </ion-item-divider>
+          <ion-item ><h3>{{order.order_business_name}}</h3></ion-item>
+          <ion-item *ngIf="order.order_business_street"><b>Adresse: </b> {{order.order_business_street}}</ion-item>
+          <ion-item *ngIf="order.order_business_city"><b>Ville: </b> {{order.order_business_city}}</ion-item>
+          <ion-item *ngIf="order.order_business_zipCode"> <b>Code postal: </b> {{order.order_business_zipCode}}</ion-item>
+          <ion-item *ngIf="order.order_business_phone"><b>Telephone: </b> <a style="text-decoration: none" href="tel:{{order.order_business_phone}}">{{order.order_business_phone}}</a></ion-item>
+          <ion-item>
+            <h5>Navigation:</h5>
+            <div *ngIf="order.order_business_street"><a
+                    (click)="linkToAddresses('' + order.order_business_street + ', ' + order.order_business_zipCode + ' ' + order.order_business_city)">{{order.order_business_street}}, {{order.order_business_zipCode}} {{order.order_business_city}}</a></div>
+          </ion-item>
+      </ion-item-group>
+          <ion-col>
+              <ion-item>
+                  <ion-label position="floating">Code Commerçant</ion-label>
+                  <ion-input [(ngModel)]="code"></ion-input>
+              </ion-item>
+          </ion-col>
+          <ion-row>
+              <ion-col>
+                  <ion-button (click)="onSubmit()" size="large">Valider</ion-button><p></p>
+              </ion-col>
+          </ion-row>
+
+      <ion-item-group *ngFor="let order of orders">
+
+          <ion-item-divider>
+              <ion-label>CLIENT</ion-label>
+          </ion-item-divider>
+          <ion-item><b>Nom: {{order.order_customer_name | titlecase }}</b></ion-item>
+          <ion-item *ngIf="order.order_customer_name"><b>Adresse:</b> {{order.order_customer_street}}</ion-item>
+          <ion-item *ngIf="order.order_customer_name"><b>Ville:</b> {{order.order_customer_city}}</ion-item>
+          <ion-item *ngIf="order.order_customer_name"><b>Code postal:</b> {{order.order_customer_zipCode}}</ion-item>
+          <ion-item *ngIf="order.order_customer_name && order.order_customer_comment"><b>Commentaire:</b> {{order.order_customer_comment}}</ion-item>
+          <ion-item *ngIf="order.order_customer_phone"><b>Téléphone:</b> <a style="text-decoration: none" href="tel:{{order.order_customer_name}}">{{order.order_customer_name}}</a></ion-item>
+          <ion-item>
+            <h5>Navigation</h5>
+            <div *ngIf="order.order_customer_street"><a (click)="linkToAddresses('' + order.order_customer_street + ', ' + order.order_customer_zipCode + ' ' + order.order_customer_city)">{{order.order_customer_street}}, {{order.order_customer_zipCode}} {{order.order_customer_city}}</a></div>
+          </ion-item>
+      </ion-item-group>
+  </ion-list>
+
+</ion-content>
+
+
+
