@@ -22,6 +22,22 @@ const routes: Routes = [
   {
     path: 'overview',
     loadChildren: () => import('./overview/overview.module').then( m => m.OverviewPageModule)
+  },
+  {
+    path: 'available-orders',
+    loadChildren: () => import('./available-orders/available-orders.module').then(m => m.AvalaibleOrdersPageModule)
+  },
+  {
+    path: 'pending-orders',
+    loadChildren: () => import('./pending-orders/pending-orders.module').then( m => m.PendingOrdersPageModule)
+  },
+  {
+    path: 'detail-delivery',
+    loadChildren: () => import('./detail-delivery/detail-delivery.module').then( m => m.DetailDeliveryPageModule)
+  },
+  {
+    path: 'profil',
+    loadChildren: () => import('./profil/profil.module').then( m => m.ProfilPageModule)
   }
 ];
 

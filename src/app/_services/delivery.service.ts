@@ -23,4 +23,23 @@ export class DeliveryService {
     return this.http.get<any>(`${this.urlApi}/deliverer/${id}/analyze`,
         {headers: this.headers});
   }
+
+  getDeliverer(): Observable<any> {
+    return this.http.get<any>(`${this.urlApi}/deliverer/info`,
+        this.headers);
+  }
+
+  getOrderById(orderId: number): Observable<any> {
+    return this.http.get<any>(`${this.urlApi}/order/${orderId}`,
+        this.headers);
+  }
+
+  saveOrderFinal(request: any[]){
+    return this.http.post<any>(`${this.urlApi}/order/save/final`, request, this.headers);
+  }
+
+  saveOrderDeliverer(request: any[]){
+    return this.http.post<any>(`${this.urlApi}/order/save_deliverer`, request, this.headers);
+  }
+
 }
