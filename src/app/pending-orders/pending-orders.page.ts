@@ -1,5 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {Router} from "@angular/router";
+import {NavigationExtras, Router} from '@angular/router';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {AuthenticationService} from '@app/_services/authentication.service';
+import {DeliveryService} from '@app/_services/delivery.service';
+import {Restaurant} from '@app/_models/restaurant';
+import {Order} from '@app/_models/order';
+import {Deliverer} from '@app/_models/deliverer';
 
 @Component({
   selector: 'app-pending-orders',
@@ -8,32 +14,57 @@ import {Router} from "@angular/router";
 })
 export class PendingOrdersPage implements OnInit {
 
+  schedulePrepartionTimes: any[] = [];
+  commerce: Restaurant;
+  deliverer: Deliverer;
+  orders: any[] = [];
+  order: Order;
+  orderId: string;
+  error: string;
+  headers: any;
 
-  public orders: Array<{ restaurant: string; order: number ; dateTake: string; preparingTime: string, delivery_cost: number, tip: number, fastItBonus: number}> = [];
-  constructor(private router: Router) {
-    for (let i = 1; i < 3; i++) {
-    this.orders.push({
-      restaurant: 'Panama',
-      order: i,
-      dateTake: '02-01-2021 13:56:00',
-      preparingTime: '(15-30 min)',
-      delivery_cost: 3.5,
-      tip: 0.5,
-      fastItBonus: 0
+  userNameNoLimit = 'fasteat74@gmail.com';
+  nbDeliveryMax = 1;
 
-
-    });
-  }
-}
+  // tslint:disable-next-line:max-line-length
+  constructor(private http: HttpClient, private authenticate: AuthenticationService, private deliveryService: DeliveryService, private router: Router) {
+    this.headers = new HttpHeaders({'Content-Type': 'application/json; charset=utf-8'});
+    if (localStorage.getItem('cart_fast_eat')) {
+    }
+    if (this.authenticate.tokenUserCurrent == null) {
+      // this.router.navigate(['/login']);
+    }
+    if (this.authenticate.tokenUserCurrent) {
+      this.headers.append(`Authorization: Bearer ${this.authenticate.tokenUserCurrent}`) ;
+    }
+   }
 
 
 ngOnInit(){
 
+  this.deliverer = new Deliverer();
+  this.deliverer.orders = [];
+
+  this.deliveryService.getCurrentOrders().subscribe((delivererCurrent) => {
+
+    console.log(delivererCurrent);
+      // get Orders awaiting delivery
+    this.deliverer = delivererCurrent;
+    this.orders = (this.deliverer.orders != null) ? this.deliverer.orders : new Array();
+  });
+
 
 }
-  onSubmit() {
-
-    this.router.navigate(['detail-delivery'])
+  onSubmit(orderId: string) {
+    console.log('orderId', orderId);
+    let navigationExtras: NavigationExtras = {
+      state: {
+        orderId
+      }
+    };
+    console.log('navigationExtras', navigationExtras);
+    // @ts-ignore
+    this.router.navigate(['detail-delivery'], navigationExtras);
 
   }
 }

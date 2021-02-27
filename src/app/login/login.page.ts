@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthenticationService} from '@app/_services/authentication.service';
-import {Router} from "@angular/router";
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -23,10 +23,10 @@ export class LoginPage implements OnInit {
     this.auth.login(this.email, this.password)
         .subscribe((res) => {
         if (res === true) {
-          this.router.navigate(['overview'])
+          this.router.navigate(['overview']);
           console.warn('test', res);
           }
-        else {this.error = "Vous n'avez pas de profil Livreur"}
+        else {this.error = "Vous n avez pas de profil Livreur"}
         });
 
 

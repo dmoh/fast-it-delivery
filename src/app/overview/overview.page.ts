@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {DeliveryService} from "@app/_services/delivery.service";
 import {Router} from "@angular/router";
+import {UserService} from "@app/_services/user.service";
 
 @Component({
   selector: 'app-overview',
@@ -11,7 +12,8 @@ export class OverviewPage implements OnInit {
   imgLogo: string = "https://fast-it.fr/assets/logo_fastit.jpg";
   amountOrderCurrentMonth :number;
   countOrderCurrentMonth :number;
-  constructor(private  deliveryService: DeliveryService,
+  statusDeliverer :boolean;
+  constructor(private  deliveryService: DeliveryService, private userService: UserService,
               private router: Router) { }
 
   ngOnInit() {
@@ -33,6 +35,17 @@ export class OverviewPage implements OnInit {
         break;
 
     }
+  }
+
+  onChangeStatus(){
+    console.log(this.statusDeliverer);
+    this.userService.setDelivererStatus(this.statusDeliverer)
+        .subscribe((response) => {
+          if (response.ok) {
+            console.log('ok en ligne');
+          }
+        });
+
   }
 
 

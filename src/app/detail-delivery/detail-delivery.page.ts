@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {DeliveryService} from "@app/_services/delivery.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {AlertController} from "@ionic/angular";
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {DeliveryService} from '@app/_services/delivery.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {AlertController} from '@ionic/angular';
+import { Order } from '@app/_models/order';
+import {Restaurant} from "@app/_models/restaurant";
+import {User} from "@app/_models/user";
 
 @Component({
   selector: 'app-detail-delivery',
@@ -10,92 +13,61 @@ import {AlertController} from "@ionic/angular";
   styleUrls: ['./detail-delivery.page.scss'],
 })
 export class DetailDeliveryPage implements OnInit {
-  hasDeliveryCode: boolean = true;
+  hasDeliveryCode = true;
   delivererForm: FormGroup;
   isValid: boolean;
   orderId: string;
-  order: any;
+  order: Order;
   isDelivering: boolean;
-  code: string;
-  public orders: Array<{ order_business_name: string; order_business_street: string ; order_business_city: string; order_business_zipCode: string, order_business_phone: string,
-    order_customer_name: string; order_customer_street: string ; order_customer_city: string; order_customer_zipCode: string, order_customer_phone: string, order_customer_comment: string}> = [];
 
   constructor(private fb: FormBuilder,
               private deliveryService: DeliveryService,
               private router: Router,
-              //private pickupOrderModal: NgbModal,
-              public alertController: AlertController,
-              private route: ActivatedRoute) { this.isDelivering = null;
-    this.orders.push({
-      //business
-      order_business_name: 'Panama',
-      order_business_street: '11 rue CLAUDE HUGARD',
-      order_business_city: 'CLUSES',
-      order_business_zipCode: '74300',
-      order_business_phone: '0625557719',
+              private route: ActivatedRoute) {
+    // this.route.queryParams.subscribe(params => {
+    //  if (this.router.getCurrentNavigation().extras.state) {
+    //    this.orderId = this.router.getCurrentNavigation().extras.state.orderId;
+     //   console.log('orderId du détail 1', this.orderId);
+     // }
+    // });
 
-      //customer
-      order_customer_name: 'Sofian AYAYDA',
-      order_customer_street: '34 avenue GEORGES CLEMENCEAU',
-      order_customer_city: 'CLUSES',
-      order_customer_zipCode: '74300',
-      order_customer_phone: '0625557719',
-      order_customer_comment: 'jai déménagé'
+    this.isDelivering = null;
+    this.order = new Order();
+    this.order.business = new Restaurant();
+    this.order.customer = new User();
 
+  }
 
+  ngOnInit() {
+    this.isValid = true;
+    // this.orderId = this.route.snapshot.paramMap.get('id');
+    this.route.queryParams.subscribe(params => {
+        if (this.router.getCurrentNavigation().extras.state) {
+          this.orderId = this.router.getCurrentNavigation().extras.state.orderId;
+          this.deliveryService.getDeliverer().subscribe(deliverer => {
+            console.log('deliverer', deliverer);
+            console.log('orderId du détail', this.orderId);
+            this.deliveryService.getOrderById(+this.orderId).subscribe(orderById => {
+              console.log('orderById', orderById);
+              if (orderById.deliverer?.id !== deliverer.id) {
+                this.router.navigate(['available-orders']);
+              }
+              // let order: Order = new Order();
+              this.order = orderById;
+              this.isDelivering = this.order.status >= 3 && this.order.date_delivered == null;
+
+              this.hasDeliveryCode = this.order.deliverCode != null;
+
+              this.delivererForm = this.fb.group({
+                code: ['', Validators.required],
+                notCode: false
+              });
+            });
+          });
+        }
     });
   }
 
-  ngOnInit() : void {this.isValid = true;
-    this.orderId = this.route.snapshot.paramMap.get('id');
-
-    this.deliveryService.getDeliverer().subscribe( deliverer => {
-      console.log("deliverer", deliverer);
-      this.deliveryService.getOrderById(+this.orderId).subscribe( orderById => {
-        console.log("order", orderById);
-
-        console.log(orderById.deliverer?.id);
-        console.log(deliverer.id);
-        if (orderById.deliverer?.id !== deliverer.id) {
-          this.router.navigate(['/delivery/awaiting-delivery']);
-        }
-        //let order: Order = new Order();
-
-        this.order = orderById;
-        this.isDelivering = this.order.status >= 3 && this.order.date_delivered == null ;
-
-        this.hasDeliveryCode = this.order.deliverCode != null;
-
-        this.delivererForm = this.fb.group({
-          code: ["", Validators.required],
-          notCode: false
-        });
-      });
-    });
-  }
-
-  async presentAlertConfirm() {
-    const alert = await this.alertController.create({
-      cssClass: 'my-custom-class',
-      header: 'Confirm!',
-      message: 'Message <strong>text</strong>!!!',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {
-            console.log('Confirm Cancel: blah');
-          }
-        }, {
-          text: 'Okay',
-          handler: () => {
-            console.log('Confirm Okay');
-          }
-        }
-      ]
-    })
-  }
   public linkToAddresses(address: string) {
     const direction = encodeURI(address);
     if /* if we're on iOS, open in Apple Maps */
@@ -130,7 +102,7 @@ export class DetailDeliveryPage implements OnInit {
 
   private finalizeDelivery() {
     let order: any;
-    let dateDelivered = '@' + Math.round(Date.now()/1000) ;
+    const dateDelivered = '@' + Math.round(Date.now() / 1000) ;
 
     order = {
       order : {
@@ -145,9 +117,9 @@ export class DetailDeliveryPage implements OnInit {
   }
 
   private saveOrderDeliverer(orderId, delivererId, dateDelivery, refresh) {
-    let dateTakenDeliverer = dateDelivery;
+    const dateTakenDeliverer = dateDelivery;
 
-    let dateDelivered = '@' + Math.round(dateDelivery/1000) ;
+    const dateDelivered = '@' + Math.round(dateDelivery / 1000) ;
 
     let orderSave: any;
     orderSave = {
@@ -162,19 +134,19 @@ export class DetailDeliveryPage implements OnInit {
     this.deliveryService.saveOrderDeliverer(orderSave).subscribe(
         next => {
           if (refresh) {
-            console.warn("success", next);
+            console.warn('success', next);
             window.location.reload();
           }
         },
         error => {
-          console.error("error", error);
+          console.error('error', error);
         }
     );
   }
 
   onSubmit() {
 
-    this.router.navigate(['detail-delivery'])
+    this.router.navigate(['detail-delivery']);
 
   }
 

@@ -51,7 +51,7 @@
         <!-- Pour l'affichage du toggle on vérifiera en base le statut du livreur,
         si il est inactif on grise le toggole sinon on le met en ligne-->
           <ion-col>
-            <ion-toggle color ="success" checked="true"></ion-toggle>
+            <ion-toggle [(ngModel)]="statusDeliverer" (ionChange)="onChangeStatus()" color ="success" checked="true"></ion-toggle>
           </ion-col>
           <ion-col>
             <ion-label>En ligne</ion-label>

@@ -6,7 +6,7 @@ export class Restaurant {
   id: number = 0;
   name: string = '';
   street: string = '';
-  zipcode: string = '';
+  zipCode: string = '';
   number: string = '';
   city: string = '';
   description: string = '';

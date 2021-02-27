@@ -14,9 +14,16 @@ export class DeliveryService {
   urlApi: string = environment.apiUrl;
 
   constructor(private http: HttpClient, private authenticate: AuthenticationService, private router: Router) {
-    this.headers = new HttpHeaders({'Content-Type': 'application/json; charset=utf-8'});
-    this.headers.append(`Authorization`, `Bearer ${this.authenticate.tokenUserCurrent}`) ;
-
+    const token = JSON.parse(localStorage.getItem('currentUser'));
+    this.headers = new HttpHeaders({
+      'Content-Type': 'application/json; charset=utf-8'
+    });
+    if (token.token) {
+      this.headers = new HttpHeaders({
+        'Content-Type': 'application/json; charset=utf-8',
+        Authorization: `Bearer ${token.token}`
+      });
+    }
   }
 
   getOrderAnalize(id: number): Observable<any> {
@@ -24,22 +31,35 @@ export class DeliveryService {
         {headers: this.headers});
   }
 
+  getCurrentOrders(): Observable<any> {
+    return this.http.post<any>(`${this.urlApi}/deliverer/current_orders`, null,
+
+        {headers: this.headers});
+  }
+
+
+
   getDeliverer(): Observable<any> {
     return this.http.get<any>(`${this.urlApi}/deliverer/info`,
-        this.headers);
+        {headers: this.headers});
   }
 
   getOrderById(orderId: number): Observable<any> {
     return this.http.get<any>(`${this.urlApi}/order/${orderId}`,
-        this.headers);
+        {headers: this.headers});
   }
 
   saveOrderFinal(request: any[]){
-    return this.http.post<any>(`${this.urlApi}/order/save/final`, request, this.headers);
+    return this.http.post<any>(`${this.urlApi}/order/save/final`, request, {headers: this.headers});
   }
 
   saveOrderDeliverer(request: any[]){
-    return this.http.post<any>(`${this.urlApi}/order/save_deliverer`, request, this.headers);
+    return this.http.post<any>(`${this.urlApi}/order/save_deliverer`, request, {headers: this.headers});
+  }
+
+  getOrderAvailabe(): Observable<any>{
+    return this.http.get<any>( `${this.urlApi}/order/available`, {headers: this.headers});
+
   }
 
 }
