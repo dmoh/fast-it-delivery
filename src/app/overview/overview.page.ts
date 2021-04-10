@@ -17,6 +17,7 @@ export class OverviewPage implements OnInit {
               private router: Router) { }
 
   ngOnInit() {
+    this.statusDeliverer = localStorage.getItem("statusDeliverer") == "true";
     this.deliveryService.getOrderAnalize(1)
         .subscribe((response) => {
           console.log(response);
@@ -43,6 +44,8 @@ export class OverviewPage implements OnInit {
         .subscribe((response) => {
           if (response.ok) {
             console.log('ok en ligne');
+            localStorage.setItem('statusDeliverer', this.statusDeliverer ? "true" : "false");
+            console.log('getitem',localStorage.getItem("statusDeliverer"));
           }
         });
 

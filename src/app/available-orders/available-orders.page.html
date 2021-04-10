@@ -13,7 +13,8 @@
 <!-- Custom Refresher Properties -->
 
 <!-- Custom Refresher Content -->
-<ion-content>
+
+<ion-content *ngIf="statusDeliverer">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content
             pullingIcon="chevron-down-circle-outline"

@@ -27,6 +27,7 @@ export class AvailableOrdersPage implements OnInit {
   error: string;
   headers: any;
   fastEatConst = fasteatconst;
+  statusDeliverer: boolean=false;
 
   // userNameNoLimit = 'fasteat74@gmail.com';
   userNameNoLimit = 'test@gmail.com';
@@ -48,7 +49,8 @@ export class AvailableOrdersPage implements OnInit {
               public alertController: AlertController,
               private authenticate: AuthenticationService,
               private deliveryService: DeliveryService,
-              private activatedRoute: ActivatedRoute) {  }
+              private activatedRoute: ActivatedRoute) {
+                console.log('status deliverer controller', this.statusDeliverer);  }
 
   doRefresh(event) {
     console.log('Begin async operation');
@@ -63,23 +65,15 @@ export class AvailableOrdersPage implements OnInit {
     this.deliverer = new Deliverer();
     this.deliverer.orders = [];
     const source = timer(4000, 7000);
+    this.statusDeliverer = localStorage.getItem("statusDeliverer") == "true";
+    console.log('status deliverer ngOninit', this.statusDeliverer);
 
-    // const suscribe = source.subscribe( val => {
+
+    
     this.deliveryService.getOrderAvailabe().subscribe((response) => {
       console.log(response);
       this.orders = response.response;
-      //  for (let i = 1; i < 3; i++) {
-      //    this.orders.push({
-      //      restaurant: 'Panama',
-      //      order: i,
-      //      dateTake: '02-01-2021 13:56:00',
-      //      preparingTime: '(15-30 min)',
-      //      delivery_cost: 3.5,
-      //      tip: 0.5,
-      //      fastItBonus: 0
-      //    });
-      // }
-      //   });
+     
     });
   }
 
@@ -100,8 +94,6 @@ export class AvailableOrdersPage implements OnInit {
           handler: () => {
             console.warn('orderId', orderId);
             this.doAffectDeliverer(orderId);
-           // this.router.navigate(['pending-orders']);
-           //               console.log('Confirm Okay');
           }
         }
       ]

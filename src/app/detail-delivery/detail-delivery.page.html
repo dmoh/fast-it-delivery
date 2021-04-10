@@ -8,13 +8,10 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<div *ngIf="order">
 <ion-content>
+  <ion-item><h2>N° de commande : {{ orderId }}</h2></ion-item>
   <ion-list>
-      <ion-item-group *ngIf="orderId"><b>#{{ orderId }}</b>
-
-
-      <ion-item-divider>
+    <ion-item-divider>
           <ion-label>COMMERCANT</ion-label>
       </ion-item-divider>
           <ion-item ><h3>{{order.business.name}}</h3></ion-item>
@@ -28,29 +25,26 @@
                     (click)="linkToAddresses('' + order.business.street + ', ' + order.business.zipCode + ' ' + order.business.city)">{{order.business.street}}, {{order.business.zipCode}} {{order.business.city}}</a></div>
           </ion-item>
 
-      </ion-item-group>
           <ion-row>
               <ion-col>
                   <ion-button (click)="onSubmit()" size="large">Valider</ion-button><p></p>
               </ion-col>
           </ion-row>
 
-      <ion-item-group *ngIf="orderId"><b>#{{ orderId }}</b>
-
           <ion-item-divider>
               <ion-label>CLIENT</ion-label>
           </ion-item-divider>
-          <ion-item><b>Nom: {{order.customer.name | titlecase }}</b></ion-item>
-          <ion-item *ngIf="order.customer.street"><b>Adresse:</b> {{order.customer.street}}</ion-item>
-          <ion-item *ngIf="order.customer.city"><b>Ville:</b> {{order.customer.city}}</ion-item>
-          <ion-item *ngIf="order.customer.zipcode"><b>Code postal:</b> {{order.customer.zipCode}}</ion-item>
-          <ion-item *ngIf="order.customer.name && order.customer.comment"><b>Commentaire:</b> {{order.customer.comment}}</ion-item>
-          <ion-item *ngIf="order.customer.phone"><b>Téléphone:</b> <a style="text-decoration: none" href="tel:{{order.customer.name}}">{{order.customer.name}}</a></ion-item>
+          <ion-item *ngIf="order.customer.addresses"><b>Nom: {{order.customer.addresses[0].name | titlecase }}</b></ion-item>
+          <ion-item *ngIf="order.customer.addresses"><b>Adresse:</b> {{order.customer.addresses[0].street}}</ion-item>
+          <ion-item *ngIf="order.customer.addresses"><b>Ville:</b> {{order.customer.addresses[0].city}}</ion-item>
+          <ion-item *ngIf="order.customer.addresses"><b>Code postal:</b> {{order.customer.addresses[0].zipCode}}</ion-item>
+          <ion-item *ngIf="order.customer.addresses && order.customer.comment"><b>Commentaire:</b> {{order.customer.comment}}</ion-item>
+          <ion-item *ngIf="order.customer.addresseses"><b>Téléphone:</b> <a style="text-decoration: none" href="tel:{{order.customer.name}}">{{order.customer.name}}</a></ion-item>
           <ion-item>
             <h5>Navigation</h5>
-            <div *ngIf="order.customer.street"><a (click)="linkToAddresses('' + order.customer.street + ', ' + order.customer.zipCode + ' ' + order.customer.city)">{{order.customer.street}}, {{order.customer.zipCode}} {{order.customer.city}}</a></div>
+            <div *ngIf="order.customer.addresses"><a (click)="linkToAddresses('' + order.customer.addresses[0].street + ', ' + order.customer.addresses[0].zipCode + ' ' + order.customer.addresses[0].city)">{{order.customer.addresses[0].street}}, {{order.customer.addresses[0].zipCode}} {{order.customer.addresses[0].city}}</a></div>
           </ion-item>
-      </ion-item-group>
+      
 
       <ion-row>
           <ion-col>
@@ -60,7 +54,7 @@
   </ion-list>
 
 </ion-content>
-</div>
+
 
 
 

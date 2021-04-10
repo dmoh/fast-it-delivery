@@ -51,6 +51,8 @@ ngOnInit(){
       // get Orders awaiting delivery
     this.deliverer = delivererCurrent;
     this.orders = (this.deliverer.orders != null) ? this.deliverer.orders : new Array();
+    
+    console.log("order", this.orders);
   });
 
 
