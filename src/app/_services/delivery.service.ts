@@ -10,7 +10,6 @@ import {Observable} from "rxjs";
 })
 export class DeliveryService {
   headers: any ;
-
   urlApi: string = environment.apiUrl;
 
   constructor(private http: HttpClient, private authenticate: AuthenticationService, private router: Router) {
@@ -21,32 +20,26 @@ export class DeliveryService {
     if (token.token) {
       this.headers = new HttpHeaders({
         'Content-Type': 'application/json; charset=utf-8',
-        Authorization: `Bearer ${token.token}`
+        'Authorization': `Bearer ${token.token}`
       });
     }
   }
 
-  getOrderAnalize(id: number): Observable<any> {
-    return this.http.get<any>(`${this.urlApi}/deliverer/${id}/analyze`,
-        {headers: this.headers});
+  getOrderAnalize(id: number, request = null): Observable<any> {
+    console.log("headers", this.headers);
+    return this.http.post<any>(`${this.urlApi}/deliverer/${id}/analyze`, request, {headers: this.headers} );
   }
 
   getCurrentOrders(): Observable<any> {
-    return this.http.post<any>(`${this.urlApi}/deliverer/current_orders`, null,
-
-        {headers: this.headers});
+    return this.http.post<any>(`${this.urlApi}/deliverer/current_orders`, null, {headers: this.headers});
   }
 
-
-
   getDeliverer(): Observable<any> {
-    return this.http.get<any>(`${this.urlApi}/deliverer/info`,
-        {headers: this.headers});
+    return this.http.get<any>(`${this.urlApi}/deliverer/info`, {headers: this.headers});
   }
 
   getOrderById(orderId: number): Observable<any> {
-    return this.http.get<any>(`${this.urlApi}/order/${orderId}`,
-        {headers: this.headers});
+    return this.http.get<any>(`${this.urlApi}/order/${orderId}`, {headers: this.headers});
   }
 
   saveOrderFinal(request: any[]){

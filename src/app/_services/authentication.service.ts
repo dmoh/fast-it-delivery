@@ -14,7 +14,7 @@ export class AuthenticationService {
   public get tokenUserCurrent(): string {
         console.warn(JSON.parse(localStorage.getItem('currentUser')));
         return JSON.parse(localStorage.getItem('currentUser')); // this.currentUserSubject.value.token;
-    }
+  }
   login(email: string, password: string) {
     const optionRequete = {
       headers: new HttpHeaders({

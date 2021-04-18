@@ -13,17 +13,24 @@ export class OverviewPage implements OnInit {
   amountOrderCurrentMonth :number;
   countOrderCurrentMonth :number;
   statusDeliverer :boolean;
+  rangeDate: any;
   constructor(private  deliveryService: DeliveryService, private userService: UserService,
               private router: Router) { }
 
   ngOnInit() {
     this.statusDeliverer = localStorage.getItem("statusDeliverer") == "true";
-    this.deliveryService.getOrderAnalize(1)
+    this.rangeDate = {dtstart : new Date().toLocaleDateString(), dtend : new Date().toLocaleDateString()};
+
+    // setTimeout(() => {
+    const getOrderSub = this.deliveryService.getOrderAnalize(1, this.rangeDate)
         .subscribe((response) => {
           console.log(response);
           this.amountOrderCurrentMonth = ((response.delivery_cost).toFixed(2)).replace('.', ',');
           this.countOrderCurrentMonth = response.count;
         });
+        
+    //   getOrderSub.unsubscribe();
+    // }, 1000);
   }
 
   goTo(page:string):void{
