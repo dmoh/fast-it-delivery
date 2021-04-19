@@ -15,17 +15,21 @@
     <ion-item-group *ngFor="let order of orders">
 
       <ion-item-divider>
-        <ion-label>commande n°{{order.id}}</ion-label>
+        <ion-label>Commande n°{{order.id}}</ion-label>
       </ion-item-divider>
       <ion-item>
         <ion-label>
-          <h3>Une commande est en attente de livraison chez:</h3>
-          <h4 style="color: blue;text-transform: uppercase; font-size: large"> {{order.business.name}}</h4>
+          <h2><b>Commande en attente de livraison chez:</b></h2>
+          <h4 style="color: blue;text-transform: uppercase; text-align: center; font-size: large"> {{order.business.name}}</h4>
         </ion-label>
       </ion-item>
       <ion-item>
-        <h3>Commande prise le : </h3>
-        <h4 >{{ order.date.date | date: 'HH:mm' }} {{ order.date.date |  date: 'dd:mm' }} </h4>
+        <h3> Commandé par le client: </h3>
+        <h4> {{ order.payedAt.date | date: 'dd/MM/yyyy' }} à {{ order.payedAt.date |  date: 'HH:mm' }} </h4>
+      </ion-item>
+      <ion-item>
+        <h3> Accepté par le livreur: </h3>
+        <h4> {{ order.date_taken_deliverer.date | date: 'dd/MM/yyyy' }} à {{ order.date_taken_deliverer.date |  date: 'HH:mm' }} </h4>
       </ion-item>
       <ion-item>
         <h3>Temps de préparation :</h3>
@@ -33,13 +37,13 @@
       </ion-item>
       <ion-item>
         <ion-label>
-          <h3>Cout de la livraison(Pourboire et Bonus compris) :</h3>
-          <h4>{{order.delivery_cost/100}}€</h4>
+          <h3>Cout de la livraison (<i>Bonus + Pourboire inclus</i>):</h3>
+          <h4>{{order.delivery_cost/100}} €</h4>
         </ion-label>
       </ion-item>
 
         <ion-row>
-          <ion-col>
+          <ion-col style="text-align: center">
             <ion-text (click)="onSubmit(order.id)" size="large" color ="primary">Détail de la livraison</ion-text><br /><br />
           </ion-col>
         </ion-row>

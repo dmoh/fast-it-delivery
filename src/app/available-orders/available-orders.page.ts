@@ -67,13 +67,16 @@ export class AvailableOrdersPage implements OnInit {
     const source = timer(4000, 7000);
     this.statusDeliverer = localStorage.getItem("statusDeliverer") == "true";
     console.log('status deliverer ngOninit', this.statusDeliverer);
-
-
     
     this.deliveryService.getOrderAvailabe().subscribe((response) => {
       console.log(response);
-      this.orders = response.response;
-     
+      this.orders = response.orders;
+      this.orders.forEach( order => {
+        order.amount /=  100;
+      })
+      console.log(this.orders);
+      // setTimeout(() => {
+      // }, 0);
     });
   }
 
