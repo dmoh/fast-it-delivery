@@ -3,13 +3,14 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {map} from "rxjs/operators";
 import jwt_decode from "jwt-decode";
 import {environment} from "../../environments/environment";
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   public get tokenUserCurrent(): string {
         console.warn(JSON.parse(localStorage.getItem('currentUser')));
@@ -43,6 +44,11 @@ export class AuthenticationService {
             return false;
           }
         }));
+  }
+
+  logout() {
+    localStorage.clear();
+    this.router.navigate(['login']);
   }
 
 }

@@ -6,6 +6,10 @@
     <ion-title style="font-size: 90%">
       COMMANDES DISPONIBLES
     </ion-title>
+    <ion-buttons class="ion-margin-right" slot="end">
+      <ion-icon slot="start" color="primary" style="font-size: 25px" 
+      ios="power-outline" md="power-sharp" (click)="onLogout()"></ion-icon>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -55,7 +59,7 @@
       </ion-item>
       <ion-item>
         <ion-row>
-          <ion-col>
+          <ion-col class="ion-margin-top ion-margin-bottom ion-text-center">
             <ion-button (click)="presentAlertConfirm(order.id)"> Accepter la livraison</ion-button><p></p>
           </ion-col>
         </ion-row>

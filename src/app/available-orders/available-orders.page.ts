@@ -68,15 +68,17 @@ export class AvailableOrdersPage implements OnInit {
     this.statusDeliverer = localStorage.getItem("statusDeliverer") == "true";
     console.log('status deliverer ngOninit', this.statusDeliverer);
     
+    this.getOrderAvaible();
+  }
+
+  getOrderAvaible() {
     this.deliveryService.getOrderAvailabe().subscribe((response) => {
       console.log(response);
       this.orders = response.orders;
       this.orders.forEach( order => {
         order.amount /=  100;
-      })
+      });
       console.log(this.orders);
-      // setTimeout(() => {
-      // }, 0);
     });
   }
 
@@ -106,8 +108,6 @@ export class AvailableOrdersPage implements OnInit {
     const result = await alert.onDidDismiss();
     console.log(result);
   }
-
-
 
   // Affecter un livreur  à une commande
   private doAffectDeliverer(orderId: number) {

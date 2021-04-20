@@ -144,7 +144,7 @@ export class DetailDeliveryPage implements OnInit {
       //   if (result.response) {
         // }
       // });
-      // this.saveOrderDeliverer(this.order.id, this.order.deliverer.id, Date.now(), true);
+      this.saveOrderDeliverer(this.order.id, this.order.deliverer.id, Date.now(), true);
     }
   }
 

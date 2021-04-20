@@ -21,42 +21,35 @@ export class PendingOrdersPage implements OnInit {
   order: Order;
   orderId: string;
   error: string;
-  headers: any;
-
+  
   userNameNoLimit = 'fasteat74@gmail.com';
   nbDeliveryMax = 1;
 
   // tslint:disable-next-line:max-line-length
   constructor(private http: HttpClient, private authenticate: AuthenticationService, private deliveryService: DeliveryService, private router: Router) {
-    this.headers = new HttpHeaders({'Content-Type': 'application/json; charset=utf-8'});
-    if (localStorage.getItem('cart_fast_eat')) {
-    }
-    if (this.authenticate.tokenUserCurrent == null) {
-      // this.router.navigate(['/login']);
-    }
-    if (this.authenticate.tokenUserCurrent) {
-      this.headers.append(`Authorization: Bearer ${this.authenticate.tokenUserCurrent}`) ;
-    }
-   }
+  }
 
 
-ngOnInit(){
+  ngOnInit(){
 
-  this.deliverer = new Deliverer();
-  this.deliverer.orders = [];
+    this.deliverer = new Deliverer();
+    this.deliverer.orders = [];
 
-  this.deliveryService.getCurrentOrders().subscribe((delivererCurrent) => {
+    this.deliveryService.getCurrentOrders().subscribe((delivererCurrent) => {
 
-    console.log(delivererCurrent);
-      // get Orders awaiting delivery
-    this.deliverer = delivererCurrent;
-    this.orders = (this.deliverer.orders != null) ? this.deliverer.orders : new Array();
-    
-    console.log("order", this.orders);
-  });
+      console.log(delivererCurrent);
+        // get Orders awaiting delivery
+      this.deliverer = delivererCurrent;
+      this.orders = (this.deliverer.orders != null) ? this.deliverer.orders : new Array();
+      
+      console.log("order", this.orders);
+    });
+  }
 
+  onLogout() {
+    this.authenticate.logout();
+  }
 
-}
   onSubmit(orderId: string) {
     console.log('orderId', orderId);
     let navigationExtras: NavigationExtras = {

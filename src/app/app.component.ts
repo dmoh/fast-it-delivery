@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
     {
       title: 'Commandes disponibles',
       url: '/available-orders',
-      icon: 'notifications-circle',
+      icon: 'flash',
       // icon: 'notifications-circle'
     },
     {
@@ -44,17 +44,13 @@ export class AppComponent implements OnInit {
     //   url: '/folder/Trash',
     //   icon: 'trash'
     // },
-    // {
-    //   title: 'Spam',
-    //   url: '/folder/Spam',
-    //   icon: 'warning'
-    // }
   ];
   public indexParams = this.appPages.length+1;
   public params = [{
-      title: 'Profil',
+      title: 'Paramètres du profil',
       url: '/profil',
-      icon: 'person-circle'
+      icon: 'settings',
+      // icon: 'person-circle'
     }
   ];
 
@@ -64,7 +60,7 @@ export class AppComponent implements OnInit {
     private statusBar: StatusBar
   ) {
     this.initializeApp();
-    this.paramIndex = this.appPages.length + 1;
+    this.paramIndex = this.appPages.length;
   }
 
   initializeApp() {

@@ -26,7 +26,6 @@ export class DeliveryService {
   }
 
   getOrderAnalize(id: number, request = null): Observable<any> {
-    console.log("headers", this.headers);
     return this.http.post<any>(`${this.urlApi}/deliverer/${id}/analyze`, request, {headers: this.headers} );
   }
 
@@ -35,8 +34,7 @@ export class DeliveryService {
   }
 
   getInfosDeliverer(): Observable<any> {
-    return this.http.get<any>(`${this.urlApi}/deliverer/show`,
-      this.headers);
+    return this.http.get<any>(`${this.urlApi}/deliverer/show`, {headers: this.headers});
   }
 
   getDeliverer(): Observable<any> {
