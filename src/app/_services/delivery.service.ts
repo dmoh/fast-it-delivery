@@ -34,8 +34,17 @@ export class DeliveryService {
     return this.http.post<any>(`${this.urlApi}/deliverer/current_orders`, null, {headers: this.headers});
   }
 
+  getInfosDeliverer(): Observable<any> {
+    return this.http.get<any>(`${this.urlApi}/deliverer/show`,
+      this.headers);
+  }
+
   getDeliverer(): Observable<any> {
     return this.http.get<any>(`${this.urlApi}/deliverer/info`, {headers: this.headers});
+  }
+
+  getKbis(noKbis: string): Observable<any> {
+    return this.http.get<any>(`https://entreprise.data.gouv.fr/api/sirene/v1/siret/` + noKbis);
   }
 
   getOrderById(orderId: number): Observable<any> {

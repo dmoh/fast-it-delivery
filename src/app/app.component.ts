@@ -11,44 +11,52 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 })
 export class AppComponent implements OnInit {
   public selectedIndex = 0;
+  public paramIndex = 0;
+  public userName = "hi@ionicframework.com";
   public appPages = [
     {
       title: 'Vue Gloable',
       url: '/overview',
-      icon: 'mail'
+      icon: 'eye',
+      // icon: 'mail'
     },
     {
-      title: 'Commande en cours',
+      title: 'Commandes en cours',
       url: '/pending-orders',
-      icon: 'paper-plane'
+      icon: 'bicycle'
+      // icon: 'paper-plane'
     },
     {
-      title: 'Commande disponible',
+      title: 'Commandes disponibles',
       url: '/available-orders',
-      icon: 'paper-plane'
+      icon: 'notifications-circle',
+      // icon: 'notifications-circle'
     },
     {
-      title: 'Commande livrées',
-      url: '/folder/Favorites',
-      icon: 'heart'
+      title: 'Commandes livrées',
+      url: '/delivered-orders',
+      // url: '/folder/delivered-orders',
+      icon: 'checkmark-done',
+      // icon: 'heart'
     },
-    {
+    // {
+    //   title: 'Trash',
+    //   url: '/folder/Trash',
+    //   icon: 'trash'
+    // },
+    // {
+    //   title: 'Spam',
+    //   url: '/folder/Spam',
+    //   icon: 'warning'
+    // }
+  ];
+  public indexParams = this.appPages.length+1;
+  public params = [{
       title: 'Profil',
       url: '/profil',
-      icon: 'archive'
-    },
-    {
-      title: 'Trash',
-      url: '/folder/Trash',
-      icon: 'trash'
-    },
-    {
-      title: 'Spam',
-      url: '/folder/Spam',
-      icon: 'warning'
+      icon: 'person-circle'
     }
   ];
-  public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 
   constructor(
     private platform: Platform,
@@ -56,6 +64,7 @@ export class AppComponent implements OnInit {
     private statusBar: StatusBar
   ) {
     this.initializeApp();
+    this.paramIndex = this.appPages.length + 1;
   }
 
   initializeApp() {
