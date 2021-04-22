@@ -14,10 +14,21 @@ export class OverviewPage implements OnInit {
   imgLogo: string = "https://fast-it.fr/assets/logo_fastit.jpg";
   amountOrderCurrentMonth :number;
   countOrderCurrentMonth :number;
-  statusDeliverer :boolean;
+  // statusDeliverer :boolean;
   rangeDate: any;
   fastOff = environment.fastOff;
   fastOn = environment.fastOnline;
+
+  _statusDeliverer :boolean;
+
+  get statusDeliverer() {
+    // return localStorage.getItem("statusDeliverer") == "true";
+    return this._statusDeliverer;
+  }
+
+  set statusDeliverer(statusDelivery) {
+    this._statusDeliverer = statusDelivery;
+  }
 
   constructor(private  deliveryService: DeliveryService, private userService: UserService,
               private router: Router, private authenticate: AuthenticationService) { }
@@ -52,14 +63,18 @@ export class OverviewPage implements OnInit {
   }
 
   onChangeStatus(){
-    console.log(this.statusDeliverer);
+    console.log("onChangeStatus", this.statusDeliverer);
     this.userService.setDelivererStatus(this.statusDeliverer)
         .subscribe((response) => {
           if (response.ok) {
+            // pr eviter de retoutner sur la vue si status n'as pas changé
+            const oldStatus = localStorage.getItem("statusDeliverer") == "true";
+
             console.log('ok en ligne');
+            console.log('getitem',localStorage.getItem("statusDeliverer"));
             localStorage.setItem('statusDeliverer', this.statusDeliverer ? "true" : "false");
             console.log('getitem',localStorage.getItem("statusDeliverer"));
-            if ( this.statusDeliverer) {
+            if ( this.statusDeliverer && this.statusDeliverer != oldStatus) {
               this.goTo('order-avalaible');
             }
           }

@@ -23,7 +23,7 @@ export class AvailableOrdersPage implements OnInit {
   orders: any[] = [];
   order: Order;
   orderCurrentId: number;
-  awaitingDelivery: number;
+  awaitingDelivery: any;
   error: string;
   headers: any;
   fastEatConst = fasteatconst;
@@ -122,11 +122,13 @@ export class AvailableOrdersPage implements OnInit {
         console.log('deliverer', deliverer);
 
         this.awaitingDelivery = deliverer?.orders?.filter(order => order?.date_delivered == null);
+        
         console.log('awaitingdeliverer', this.awaitingDelivery);
+        console.log('this.awaitingDelivery + 1 ', this.awaitingDelivery + 1 );
 
         // TODO: 10.01.2021 Ajouter 2 constantes ( Mail livreur admin && Nb de courses possible 06/02/2021 en bdd)
         const canAffectDeliverer = deliverer?.email?.toLowerCase() === this.userNameNoLimit.toLowerCase() ||
-            this.awaitingDelivery + 1 <= this.nbDeliveryMax;
+        this.awaitingDelivery == null || this.awaitingDelivery?.length + 1 <= this.nbDeliveryMax;
 
         // Avant d'affecter une livraison à un livreur on
         // regarde si il a atteint son nombre maximum de livraison
@@ -184,7 +186,8 @@ export class AvailableOrdersPage implements OnInit {
       }
     };
     this.deliveryService.saveOrderDeliverer(orderSave).subscribe( orderSaved => {
-      this.router.navigate([`/detail-delivery/${orderId}`]);
+      // this.router.navigate([`/detail-delivery/${orderId}`]);
+      this.router.navigate([`/pending-orders/`]);
     });
   }
 

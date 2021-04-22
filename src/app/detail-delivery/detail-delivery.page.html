@@ -16,9 +16,10 @@
   <ion-item><h2>N° de commande : {{ orderId }}</h2></ion-item>
   <ion-list>
     <ion-item-divider>
-          <ion-label>COMMERCANT</ion-label>
+      <ion-label>COMMERCANT</ion-label>
       </ion-item-divider>
-          <ion-item ><h3>{{order.business.name}}</h3></ion-item>
+          <ion-item *ngIf="order.business.name"><b>Nom: {{order.business.name }}</b></ion-item>
+          <!-- <ion-item ><h3>{{order.business.name}}</h3></ion-item> -->
           <ion-item *ngIf="order.business.street"><b>Adresse: </b> {{order.business.street}}</ion-item>
           <ion-item *ngIf="order.business.city"><b>Ville: </b> {{order.business.city}}</ion-item>
           <ion-item *ngIf="order.business.zipCode"> <b>Code postal: </b> {{order.business.zipCode}}</ion-item>
@@ -49,7 +50,7 @@
             <div *ngIf="order.customer.addresses"><a (click)="linkToAddresses('' + order.customer.addresses[0].street + ', ' + order.customer.addresses[0].zipCode + ' ' + order.customer.addresses[0].city)">{{order.customer.addresses[0].street}}, {{order.customer.addresses[0].zipCode}} {{order.customer.addresses[0].city}}</a></div>
           </ion-item>
       
-      <ion-row>
+      <ion-row *ngIf="isDelivering">
           <ion-col class="ion-margin-top ion-margin-bottom ion-text-center">
               <ion-button (click)="finalizeDelivery()" size="medium">Valider </ion-button><p></p>
           </ion-col>
