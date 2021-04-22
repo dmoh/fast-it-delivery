@@ -36,9 +36,23 @@ const routes: Routes = [
     loadChildren: () => import('./detail-delivery/detail-delivery.module').then( m => m.DetailDeliveryPageModule)
   },
   {
+    path: 'delivered-orders',
+    loadChildren: () => import('./delivered-orders/delivered-orders.module').then( m => m.DeliveredOrdersPageModule)
+  },
+  {
     path: 'profil',
     loadChildren: () => import('./profil/profil.module').then( m => m.ProfilPageModule)
-  }
+  },
+  {
+    path: 'delivered-orders',
+    loadChildren: () => import('./delivered-orders/delivered-orders.module').then( m => m.DeliveredOrdersPageModule)
+  },  {
+    path: 'header',
+    loadChildren: () => import('./header/header.module').then( m => m.HeaderPageModule)
+  },
+
+
+
 ];
 
 @NgModule({

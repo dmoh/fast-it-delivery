@@ -6,6 +6,7 @@ import {AlertController} from '@ionic/angular';
 import { Order } from '@app/_models/order';
 import {Restaurant} from "@app/_models/restaurant";
 import {User} from "@app/_models/user";
+import { AuthenticationService } from '@app/_services/authentication.service';
 
 @Component({
   selector: 'app-detail-delivery',
@@ -21,7 +22,9 @@ export class DetailDeliveryPage implements OnInit {
   isDelivering: boolean;
 
   constructor(private fb: FormBuilder,
+              public alertController: AlertController,
               private deliveryService: DeliveryService,
+              private authenticate: AuthenticationService,
               private router: Router,
               private route: ActivatedRoute) {
     // this.route.queryParams.subscribe(params => {
@@ -54,6 +57,9 @@ export class DetailDeliveryPage implements OnInit {
               }
               // let order: Order = new Order();
               this.order = orderById;
+              alert(this.order);
+              console.log(this.order);
+
               this.isDelivering = this.order.status >= 3 && this.order.date_delivered == null;
 
               this.hasDeliveryCode = this.order.deliverCode != null;
@@ -100,6 +106,50 @@ export class DetailDeliveryPage implements OnInit {
     this.delivererForm.value.notCode = true;
   }
 
+  async onTakenDelivery() {
+    if (this.order && !this.isDelivering){
+
+        const modalRef = await this.alertController.create({
+        header: 'CONFIRMATION',
+          message: ' <strong> Avez vous récuperé la commande ? </strong>',
+          buttons: [
+            {
+              text: 'Non, elle est en cours de préparation',
+              role: 'cancel',
+              cssClass: 'secondary',
+              handler: (blah) => {
+                console.log('Confirm Cancel');
+              }
+            }, {
+              text: 'Oui',
+              handler: () => {
+                console.warn('orderId', this.order.id);
+                this.saveOrderDeliverer(this.order.id, this.order.deliverer.id, Date.now(), true);
+              }
+            }
+          ]
+        });
+    
+        await modalRef.present();
+        const result = await modalRef.onDidDismiss();
+        console.log(result);
+      // }
+
+      // const modalRef = this.pickupOrderModal.open(PickupOrderModalComponent, {
+      //   backdrop: 'static',
+      //   keyboard: true,
+      //   size: 'lg',
+      // });
+
+      // modalRef.componentInstance.order = this.order;
+      // modalRef.result.then((result) => {
+      //   if (result.response) {
+        // }
+      // });
+      this.saveOrderDeliverer(this.order.id, this.order.deliverer.id, Date.now(), true);
+    }
+  }
+
   private finalizeDelivery() {
     let order: any;
     const dateDelivered = '@' + Math.round(Date.now() / 1000) ;
@@ -112,7 +162,7 @@ export class DetailDeliveryPage implements OnInit {
       }
     };
     this.deliveryService.saveOrderFinal(order).subscribe( res => {
-      this.router.navigate(['/delivery/awaiting-delivery']);
+      this.router.navigate(['pending-orders']);
     });
   }
 
@@ -135,7 +185,7 @@ export class DetailDeliveryPage implements OnInit {
         next => {
           if (refresh) {
             console.warn('success', next);
-            window.location.reload();
+            // window.location.reload();
           }
         },
         error => {
@@ -145,9 +195,11 @@ export class DetailDeliveryPage implements OnInit {
   }
 
   onSubmit() {
-
     this.router.navigate(['detail-delivery']);
+  }
 
+  onLogout() {
+    this.authenticate.logout();
   }
 
 }

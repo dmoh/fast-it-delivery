@@ -1,11 +1,15 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-menu-button color="primary"></ion-menu-button>
     </ion-buttons>
-      <ion-title style="font-size: 100%">
+      <ion-title style="font-size: 90%" class="ion-text-center">
       DETAIL COMMANDE
     </ion-title>
+    <ion-buttons class="ion-margin-right" slot="end">
+      <ion-icon slot="start" color="primary" style="font-size: 25px" 
+      ios="power-outline" md="power-sharp" (click)="onLogout()"></ion-icon>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 <ion-content>
@@ -26,8 +30,8 @@
           </ion-item>
 
           <ion-row>
-              <ion-col>
-                  <ion-button (click)="onSubmit()" size="large">Valider</ion-button><p></p>
+              <ion-col class="ion-margin-top ion-margin-bottom ion-text-center">
+                  <ion-button (click)="onTakenDelivery()" size="medium">Récupérer commande</ion-button><p></p>
               </ion-col>
           </ion-row>
 
@@ -45,10 +49,9 @@
             <div *ngIf="order.customer.addresses"><a (click)="linkToAddresses('' + order.customer.addresses[0].street + ', ' + order.customer.addresses[0].zipCode + ' ' + order.customer.addresses[0].city)">{{order.customer.addresses[0].street}}, {{order.customer.addresses[0].zipCode}} {{order.customer.addresses[0].city}}</a></div>
           </ion-item>
       
-
       <ion-row>
-          <ion-col>
-              <ion-button (click)="finalizeDelivery()" size="large">TERMINER LA COMMANDE</ion-button><p></p>
+          <ion-col class="ion-margin-top ion-margin-bottom ion-text-center">
+              <ion-button (click)="finalizeDelivery()" size="medium">Valider </ion-button><p></p>
           </ion-col>
       </ion-row>
   </ion-list>

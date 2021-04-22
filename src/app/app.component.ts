@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -11,44 +12,64 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 })
 export class AppComponent implements OnInit {
   public selectedIndex = 0;
+  public paramIndex = 0;
+
+  /**
+   * @description userName recuperé dans le localstorage "stocké a la connexion"
+   */
+  public get userName () {
+    // console.log("userName",localStorage.getItem('username'));
+    return localStorage.getItem('username') ?? "hi@ionicframework.com";
+  }
+
+  fastOn = environment.fastOnline;
+  fastOff = environment.fastOff;
+
+  public get statusDeliverer () {
+    // console.log("status", localStorage.getItem('statusDeliverer'));
+    return localStorage.getItem("statusDeliverer") == "true";
+  }
+
   public appPages = [
     {
-      title: 'Vue Gloable',
+      title: 'Vue Globale',
       url: '/overview',
-      icon: 'mail'
+      icon: 'eye',
+      // icon: 'mail'
     },
     {
-      title: 'Commande en cours',
+      title: 'Commandes en cours',
       url: '/pending-orders',
-      icon: 'paper-plane'
+      icon: 'bicycle'
+      // icon: 'paper-plane'
     },
     {
-      title: 'Commande disponible',
+      title: 'Commandes disponibles',
       url: '/available-orders',
-      icon: 'paper-plane'
+      icon: 'flash',
+      // icon: 'notifications-circle'
     },
     {
-      title: 'Commande livrées',
-      url: '/folder/Favorites',
-      icon: 'heart'
+      title: 'Commandes livrées',
+      url: '/delivered-orders',
+      // url: '/folder/delivered-orders',
+      icon: 'checkmark-done',
+      // icon: 'heart'
     },
-    {
-      title: 'Profil',
+    // {
+    //   title: 'Trash',
+    //   url: '/folder/Trash',
+    //   icon: 'trash'
+    // },
+  ];
+  public indexParams = this.appPages.length+1;
+  public params = [{
+      title: 'Paramètres du profil',
       url: '/profil',
-      icon: 'archive'
-    },
-    {
-      title: 'Trash',
-      url: '/folder/Trash',
-      icon: 'trash'
-    },
-    {
-      title: 'Spam',
-      url: '/folder/Spam',
-      icon: 'warning'
+      icon: 'settings',
+      // icon: 'person-circle'
     }
   ];
-  public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 
   constructor(
     private platform: Platform,
@@ -56,6 +77,7 @@ export class AppComponent implements OnInit {
     private statusBar: StatusBar
   ) {
     this.initializeApp();
+    this.paramIndex = this.appPages.length;
   }
 
   initializeApp() {

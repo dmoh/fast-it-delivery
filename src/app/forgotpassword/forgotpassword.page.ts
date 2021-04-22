@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormGroup} from "@angular/forms";
+import { AuthenticationService } from '@app/_services/authentication.service';
 import {UserService} from "@app/_services/user.service";
 
 @Component({
@@ -13,7 +14,8 @@ export class ForgotpasswordPage implements OnInit {
   submitted: boolean;
   info: string;
   constructor(
-      private userService: UserService
+      private userService: UserService,
+      private authenticate: AuthenticationService,
   ) {
     this.submitted = false;
   }
@@ -33,5 +35,9 @@ export class ForgotpasswordPage implements OnInit {
         });
   }
   imgLogo: string = "https://fast-it.fr/assets/logo_fastit.jpg";
+
+  onLogout() {
+    this.authenticate.logout();
+  }
 
 }

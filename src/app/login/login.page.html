@@ -1,10 +1,14 @@
 <!--<ion-header>
   <ion-toolbar>
     <ion-title>login</ion-title>
+    <ion-buttons class="ion-margin-right" slot="end">
+      <ion-icon slot="start" color="primary" style="font-size: 25px" 
+      ios="power-outline" md="power-sharp" (click)="onLogout()"></ion-icon>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>-->
 
-<ion-content>
+<ion-content class="ion-text-center">
   <ion-grid>
     <ion-row>
       <ion-col>
@@ -34,7 +38,7 @@
         <ion-text class="ion-color-danger" *ngIf="error && error.length > 3">{{ error }}</ion-text>
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row class="ion-margin-top">
       <ion-col>
         <ion-button (click)="onSubmit()" size="large">Se connecter</ion-button>
       </ion-col>
