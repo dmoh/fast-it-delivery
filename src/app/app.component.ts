@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,23 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 export class AppComponent implements OnInit {
   public selectedIndex = 0;
   public paramIndex = 0;
-  public userName = "hi@ionicframework.com";
+
+  /**
+   * @description userName recuperé dans le localstorage "stocké a la connexion"
+   */
+  public get userName () {
+    // console.log("userName",localStorage.getItem('username'));
+    return localStorage.getItem('username') ?? "hi@ionicframework.com";
+  }
+
+  fastOn = environment.fastOnline;
+  fastOff = environment.fastOff;
+
+  public get statusDeliverer () {
+    // console.log("status", localStorage.getItem('statusDeliverer'));
+    return localStorage.getItem("statusDeliverer") == "true";
+  }
+
   public appPages = [
     {
       title: 'Vue Globale',

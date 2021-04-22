@@ -9,6 +9,12 @@
                 <ion-icon style="font-size:130px" lines="inset" color="primary" ios="person-circle-outline" md="person-circle-sharp"></ion-icon>
               </ion-col>
             </ion-list-header>
+            <ion-list-header>
+              <ion-col class="ion-text-center" >
+                <ion-badge color="success" *ngIf="statusDeliverer">{{fastOn}}</ion-badge>
+                <ion-badge color="danger" *ngIf="!statusDeliverer">{{fastOff}}</ion-badge>
+              </ion-col>
+            </ion-list-header>
             <ion-item ion-margin-bottom>
               <ion-list-header class="ion-text-center">
                 <ion-col class="ion-text-center" >
@@ -38,7 +44,10 @@
               <ion-label>{{ param.title }}</ion-label>
             </ion-item>
           </ion-menu-toggle>
-
+<!-- 
+          <ion-toggle ion-toggle-text ng-true-value="so true" ng-false-value="so false" ng-model="statusDeliverer">
+            Text by value: <b>{{ textByValue || 'so false' }}</b>
+          </ion-toggle> -->
         </ion-list>
       </ion-content>
     </ion-menu>
