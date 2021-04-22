@@ -15,7 +15,7 @@ export class AppComponent implements OnInit {
   public userName = "hi@ionicframework.com";
   public appPages = [
     {
-      title: 'Vue Gloable',
+      title: 'Vue Globale',
       url: '/overview',
       icon: 'eye',
       // icon: 'mail'

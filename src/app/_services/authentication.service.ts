@@ -28,6 +28,7 @@ export class AuthenticationService {
             localStorage.setItem('currentUser', JSON.stringify(user));
           // this.currentUserSubject.next(user);
           const jwtDecode = jwt_decode(user.token);
+          console.log("jwtDecode", jwtDecode);
           // @ts-ignore
           if (jwtDecode.roles) {
             // @ts-ignore

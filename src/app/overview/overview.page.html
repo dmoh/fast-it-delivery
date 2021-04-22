@@ -1,9 +1,9 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-menu-button color="primary"></ion-menu-button>
     </ion-buttons>
-    <ion-title style="font-size: 90%">
+    <ion-title style="font-size: 90%" class="ion-text-center">
       VUE GLOBALE
     </ion-title>
     <ion-buttons class="ion-margin-right" slot="end">
@@ -13,30 +13,22 @@
   </ion-toolbar>
 </ion-header>
 
-<!--<ion-header translucent>
-  <ion-toolbar>
-    <div class="ion-text-center">
-      <ion-title>VUE GLOBALE</ion-title>
-    </div>
-  <!</ion-toolbar>
-</ion-header>-->
-
 <div class="ion-page" id="main-content">
-  <ion-header>
+  <!-- <ion-header>
     <ion-toolbar>
       <ion-buttons slot="start">
-        <ion-menu-button></ion-menu-button>
+        <ion-menu-button color="primary"></ion-menu-button>
       </ion-buttons>
       <ion-title>VUE GLOBALE</ion-title>
     </ion-toolbar>
-  </ion-header>
+  </ion-header> -->
   <ion-content class="ion-padding">
     <ion-list>
       <ion-row>
         <ion-col>
           <div class="ion-text-center">
             <ion-img height="100 px" width="100 px" [src]="imgLogo" alt="logo fast-it" ></ion-img>
-            <h6>Chiffre d'affaire mensuel</h6>
+            <h6>Chiffre d'affaire du jour</h6>
             <h1>{{amountOrderCurrentMonth}} €</h1>
           </div>
         </ion-col>
@@ -45,16 +37,16 @@
         <ion-row style="align-items: center;width: 100%" class="ion-text-center" >
           <ion-col>
             <!-- <ion-label>Hors ligne</ion-label> -->
-            <ion-label>Fast-Off</ion-label>
+            <ion-label>{{fastOff}}</ion-label>
           </ion-col>
         <!-- Pour l'affichage du toggle on vérifiera en base le statut du livreur,
         si il est inactif on grise le toggole sinon on le met en ligne-->
           <ion-col>
-            <ion-toggle [(ngModel)]="statusDeliverer" (ionChange)="onChangeStatus()" color ="success" checked="true"></ion-toggle>
+            <ion-toggle [(ngModel)]="statusDeliverer" (ionChange)="onChangeStatus()" color ="primary"></ion-toggle>
           </ion-col>
           <ion-col>
             <!-- <ion-label>En ligne</ion-label> -->
-            <ion-label>Fast-Online</ion-label>
+            <ion-label>{{fastOn}}</ion-label>
           </ion-col>
         </ion-row>
       </ion-item>

@@ -13,7 +13,8 @@ export class LoginPage implements OnInit {
   error: string;
   constructor(
    private auth: AuthenticationService,
-   private router: Router
+   private router: Router,
+   private authenticate: AuthenticationService,
    ) { }
   imgLogo: string = "https://fast-it.fr/assets/logo_fastit.jpg";
   ngOnInit() {
@@ -28,8 +29,10 @@ export class LoginPage implements OnInit {
           }
         else {this.error = "Vous n avez pas de profil Livreur"}
         });
+  }
 
-
+  onLogout() {
+    this.authenticate.logout();
   }
 
 }

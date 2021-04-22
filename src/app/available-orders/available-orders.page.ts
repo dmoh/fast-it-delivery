@@ -8,7 +8,7 @@ import {Order} from '@app/_models/order';
 import * as fasteatconst from '@app/_util/fasteat-constants';
 import {AuthenticationService} from '@app/_services/authentication.service';
 import {DeliveryService} from '@app/_services/delivery.service';
-
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-available-orders',
@@ -43,6 +43,10 @@ export class AvailableOrdersPage implements OnInit {
         }, 2000
     );
   });
+
+  fastOff = environment.fastOff;
+  fastOn = environment.fastOnline;
+
   // tslint:disable-next-line:max-line-length
   // public orders: Array<{ restaurant: string; order: number ; dateTake: string; preparingTime: string, delivery_cost: number, tip: number, fastItBonus: number}> = [];//
   constructor(private router: Router,
@@ -54,7 +58,7 @@ export class AvailableOrdersPage implements OnInit {
 
   doRefresh(event) {
     console.log('Begin async operation');
-
+    this.getOrderAvaible();
     setTimeout(() => {
       console.log('Async operation has ended');
       event.target.complete();
@@ -184,11 +188,11 @@ export class AvailableOrdersPage implements OnInit {
     });
   }
 
-
+  onLogout() {
+    this.authenticate.logout();
+  }
 
   onSubmit() {
-
     this.router.navigate(['pending-orders']);
-
   }
 }

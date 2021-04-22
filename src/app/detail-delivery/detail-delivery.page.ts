@@ -6,6 +6,7 @@ import {AlertController} from '@ionic/angular';
 import { Order } from '@app/_models/order';
 import {Restaurant} from "@app/_models/restaurant";
 import {User} from "@app/_models/user";
+import { AuthenticationService } from '@app/_services/authentication.service';
 
 @Component({
   selector: 'app-detail-delivery',
@@ -23,6 +24,7 @@ export class DetailDeliveryPage implements OnInit {
   constructor(private fb: FormBuilder,
               public alertController: AlertController,
               private deliveryService: DeliveryService,
+              private authenticate: AuthenticationService,
               private router: Router,
               private route: ActivatedRoute) {
     // this.route.queryParams.subscribe(params => {
@@ -194,6 +196,10 @@ export class DetailDeliveryPage implements OnInit {
 
   onSubmit() {
     this.router.navigate(['detail-delivery']);
+  }
+
+  onLogout() {
+    this.authenticate.logout();
   }
 
 }

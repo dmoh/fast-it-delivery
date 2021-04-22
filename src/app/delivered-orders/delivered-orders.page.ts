@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Deliverer } from '@app/_models/deliverer';
 import { Order } from '@app/_models/order';
+import { AuthenticationService } from '@app/_services/authentication.service';
 import { DeliveryService } from '@app/_services/delivery.service';
 
 @Component({
@@ -13,7 +14,7 @@ export class DeliveredOrdersPage implements OnInit {
   deliverer: Deliverer;
   orders: Array<Order>;
 
-  constructor(private deliveryService: DeliveryService) { }
+  constructor(private deliveryService: DeliveryService, private authenticate: AuthenticationService) { }
 
   ngOnInit() {
     this.deliverer = new Deliverer();
@@ -31,6 +32,10 @@ export class DeliveredOrdersPage implements OnInit {
         }
       }
     });
+  }
+
+  onLogout() {
+    this.authenticate.logout();
   }
 
 }
