@@ -57,8 +57,8 @@ export class DeliveryService {
     return this.http.post<any>(`${this.urlApi}/order/save_deliverer`, request, {headers: this.headers});
   }
 
-  getOrderAvailabe(): Observable<any>{
-    return this.http.get<any>( `${this.urlApi}/order/available`, {headers: this.headers});
+  getOrderAvailabe(request: any): Observable<any>{
+    return this.http.post<any>( `${this.urlApi}/order/available`, request, {headers: this.headers});
 
   }
 

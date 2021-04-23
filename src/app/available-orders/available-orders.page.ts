@@ -29,8 +29,9 @@ export class AvailableOrdersPage implements OnInit {
   fastEatConst = fasteatconst;
   statusDeliverer: boolean=false;
 
-  // userNameNoLimit = 'fasteat74@gmail.com';
-  userNameNoLimit = 'test@gmail.com';
+  userNameNoLimit = 'fasteat74@gmail.com';
+  // userNameNoLimit = 'test@gmail.com';
+
   nbDeliveryMax = 1;
 
   secondes: number;
@@ -46,6 +47,14 @@ export class AvailableOrdersPage implements OnInit {
 
   fastOff = environment.fastOff;
   fastOn = environment.fastOnline;
+
+/**
+ * @description userName recuperé dans le localstorage "stocké a la connexion"
+ */
+    public get userName () {
+    // console.log("userName",localStorage.getItem('username'));
+    return localStorage.getItem('username') ?? "";
+  }
 
   // tslint:disable-next-line:max-line-length
   // public orders: Array<{ restaurant: string; order: number ; dateTake: string; preparingTime: string, delivery_cost: number, tip: number, fastItBonus: number}> = [];//
@@ -76,7 +85,8 @@ export class AvailableOrdersPage implements OnInit {
   }
 
   getOrderAvaible() {
-    this.deliveryService.getOrderAvailabe().subscribe((response) => {
+    const user = {user : this.userName};
+    this.deliveryService.getOrderAvailabe(user).subscribe((response) => {
       console.log(response);
       this.orders = response.orders;
       this.orders.forEach( order => {
