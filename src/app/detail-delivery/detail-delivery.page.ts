@@ -217,7 +217,7 @@ export class DetailDeliveryPage implements OnInit {
         next => {
           if (refresh) {
             console.warn('success', next);
-            this.isDelivering(orderSave);
+            this.isDelivering = orderSave;
             // window.location.reload();
           }
         },
