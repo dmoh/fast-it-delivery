@@ -5,48 +5,40 @@ import jwt_decode from "jwt-decode";
 import {environment} from "../../environments/environment";
 import {Router} from '@angular/router';
 import { Observable } from 'rxjs';
+import { ToastController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
 
-  constructor(private http: HttpClient, private router: Router) { 
+  constructor(private http: HttpClient, private router: Router, public toastController: ToastController) { 
     const token = JSON.parse(localStorage.getItem('currentUser'));
-    this.optionRequete = {
-      headers: new HttpHeaders({
+    this.headers = new HttpHeaders({
         'Content-Type': 'application/json'
-      })
-    };
-    if (token.token) {
-      this.optionRequete = {
-        headers: new HttpHeaders({
+    });
+    if (token?.token) {
+      this.headers = new HttpHeaders({
         'Content-Type': 'application/json; charset=utf-8',
         Authorization: `Bearer ${token.token}`
-        })
-      };
+      });
     }
   }
 
+  public headers: HttpHeaders;
   public get tokenUserCurrent(): string {
         console.warn(JSON.parse(localStorage.getItem('currentUser')));
         return JSON.parse(localStorage.getItem('currentUser')); // this.currentUserSubject.value.token;
   }
 
-  optionRequete: any = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json'
-    })
-  };
   urlApi: string = environment.apiUrl;
 
   login(email: string, password: string) {
     const optionRequete = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      })
+      headers: this.headers
     };
-    return this.http.post<any>(`${environment.apiUrl}/authentication_token`, { email, password }, this.optionRequete)
+
+    return this.http.post<any>(`${environment.apiUrl}/authentication_token`, { email, password }, optionRequete)
       .pipe(map((user : any) => {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
         localStorage.setItem('currentUser', JSON.stringify(user));
@@ -66,23 +58,81 @@ export class AuthenticationService {
           ) {
             // add icon and restaurant
             localStorage.setItem('roles', JSON.stringify(roles));
-              return true;
+            this.presentToastWithOptions("",'log-in',"Vous etes connecté", "bottom" );
+            return true;
             // this.currentRolesSubject.next(roles);
           }
+          this.presentToastWithOptions("", 'log-in', "Vous etes connecté", "bottom");
           return false;
         }
       }));
   }
 
   setDelivererStatus(status: boolean): Observable<any> {
-    return this.http.post<any>(`${this.urlApi}/deliverer/updateStatus/save`,{ statusDeliverer: status}, this.optionRequete);
+    const optionRequete = {
+      headers: this.headers
+    };
+    return this.http.post<any>(`${this.urlApi}/deliverer/updateStatus/save`,{ statusDeliverer: status}, optionRequete);
   }
 
   logout() {
-    localStorage.clear();
     this.setDelivererStatus(false)
-        .subscribe();
-    this.router.navigate(['login']);
+    .subscribe( x => {
+      localStorage.clear();
+      this.presentToastWithOptions("","log-out-outline","Vous avez été déconnecté");
+      this.router.navigate(['login']);
+    });
   }
+
+  public async presentToast(message: string = 'Your settings have been saved.', duration: number = 2000) {
+    const toast = await this.toastController.create({
+      message,
+      duration,
+    });
+    toast.present();
+  }
+
+  public async presentToastWithOptions(header: any = 'Toast header',
+                                icon: any = 'star',
+                                message: any = 'Click to Close',
+                                position: any = "bottom",
+                                options = null,
+                                duration: number = 2000) {
+
+    const buttonSuccess : any = {
+      // icon: 'star',
+      // side: 'start',
+      // icon: 'star',
+      // text: 'Favorite',
+      side: 'start',
+      icon,
+      text: '',
+      handler: () => {
+        console.log('Favorite clicked');
+      }
+    };
+
+    const buttonCancel : any = {
+      text: 'x',
+      role: 'cancel',
+      handler: () => {
+        console.log('Cancel clicked');
+      }
+    };
+
+    const toast = await this.toastController.create({
+      header,
+      message,
+      position,
+      buttons: [
+        buttonSuccess, buttonCancel
+      ]
+    });
+    await toast.present();
+
+    const { role } = await toast.onDidDismiss();
+    console.log('onDidDismiss resolved with role', role);
+  }
+
 
 }

@@ -35,12 +35,16 @@ export class UserService {
     return this.http.post<any>(`${this.urlApi}/user/phone/save`,{ phoneUser: phone}, {headers: this.headers});
   }
 
-
   getUserAddresses(): Observable<any> {
     return this.http.get<any>(`${this.urlApi}/user/address`, {headers: this.headers});
   }
+  
   getRestaurantIdByUsername(username: string): Observable<any> {
     return this.http.post<any>(`${this.urlApi}/user/restaurant`, {email: username},{headers: this.headers});
+  }
+
+  getDeliverer(username: string): Observable<any> {
+    return this.http.post<any>(`${this.urlApi}/deliverer/info`, null,{headers: this.headers});
   }
 
   setDelivererStatus(status: boolean): Observable<any> {

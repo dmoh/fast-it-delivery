@@ -4,6 +4,7 @@ import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { environment } from '@environments/environment';
+import { UserService } from './_services/user.service';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,7 @@ export class AppComponent implements OnInit {
 
   fastOn = environment.fastOnline;
   fastOff = environment.fastOff;
+  sectors = new Array<any>();
 
   public get statusDeliverer () {
     // console.log("status", localStorage.getItem('statusDeliverer'));
@@ -74,7 +76,8 @@ export class AppComponent implements OnInit {
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
-    private statusBar: StatusBar
+    private statusBar: StatusBar,
+    private userService: UserService
   ) {
     this.initializeApp();
     this.paramIndex = this.appPages.length;
@@ -92,5 +95,8 @@ export class AppComponent implements OnInit {
     if (path !== undefined) {
       this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
     }
+
+    this.userService.getDeliverer("").subscribe();
+
   }
 }
