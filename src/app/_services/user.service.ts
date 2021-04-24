@@ -15,7 +15,7 @@ export class UserService {
     this.headers = new HttpHeaders({
       'Content-Type': 'application/json; charset=utf-8'
     });
-    if (token.token) {
+    if (token?.token) {
       this.headers = new HttpHeaders({
         'Content-Type': 'application/json; charset=utf-8',
         Authorization: `Bearer ${token.token}`

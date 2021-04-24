@@ -34,6 +34,17 @@ export class AuthenticationService {
   urlApi: string = environment.apiUrl;
 
   login(email: string, password: string) {
+    const token = JSON.parse(localStorage.getItem('currentUser'));
+    this.headers = new HttpHeaders({
+      'Content-Type': 'application/json; charset=utf-8'
+    });
+    if (token?.token) {
+      this.headers = new HttpHeaders({
+        'Content-Type': 'application/json; charset=utf-8',
+        Authorization: `Bearer ${token.token}`
+      });
+    }
+
     const optionRequete = {
       headers: this.headers
     };
@@ -58,17 +69,29 @@ export class AuthenticationService {
           ) {
             // add icon and restaurant
             localStorage.setItem('roles', JSON.stringify(roles));
-            this.presentToastWithOptions("",'log-in',"Vous etes connecté", "bottom" );
+            this.presentToastWithOptions("",'log-in',"Vous êtes connecté", "bottom" );
             return true;
             // this.currentRolesSubject.next(roles);
           }
-          this.presentToastWithOptions("", 'log-in', "Vous etes connecté", "bottom");
+          this.presentToastWithOptions("", 'log-in', "Vous êtes connecté", "bottom");
           return false;
         }
       }));
   }
 
   setDelivererStatus(status: boolean): Observable<any> {
+    
+    const token = JSON.parse(localStorage.getItem('currentUser'));
+    this.headers = new HttpHeaders({
+      'Content-Type': 'application/json; charset=utf-8'
+    });
+    if (token?.token) {
+      this.headers = new HttpHeaders({
+        'Content-Type': 'application/json; charset=utf-8',
+        Authorization: `Bearer ${token.token}`
+      });
+    }
+
     const optionRequete = {
       headers: this.headers
     };
@@ -96,6 +119,7 @@ export class AuthenticationService {
                                 icon: any = 'star',
                                 message: any = 'Click to Close',
                                 position: any = "bottom",
+                                textStart: any = "",
                                 options = null,
                                 duration: number = 2000) {
 
@@ -106,7 +130,7 @@ export class AuthenticationService {
       // text: 'Favorite',
       side: 'start',
       icon,
-      text: '',
+      text: textStart,
       handler: () => {
         console.log('Favorite clicked');
       }
