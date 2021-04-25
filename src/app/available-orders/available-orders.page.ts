@@ -69,7 +69,7 @@ export class AvailableOrdersPage implements OnInit {
 
   doRefresh(event) {
     console.log('Begin async operation');
-    this.getOrderAvaible();
+    this.getOrderAvailable();
     setTimeout(() => {
       console.log('Async operation has ended');
       event.target.complete();
@@ -84,12 +84,12 @@ export class AvailableOrdersPage implements OnInit {
     console.log('status deliverer ngOninit', this.statusDeliverer);
     this.sector = this.activatedRoute.snapshot.paramMap.get('id');
     
-    this.getOrderAvaible();
+    this.getOrderAvailable();
   }
 
-  getOrderAvaible() {
+  getOrderAvailable() {
     const user = {user : this.userName};
-    this.deliveryService.getOrderAvailabe(user).subscribe((response) => {
+    this.deliveryService.getOrderAvailable(user).subscribe((response) => {
       console.log(response);
       this.orders = response.orders;
       this.orders.forEach( order => {
