@@ -39,13 +39,13 @@
           <ion-item-divider>
               <ion-label>CLIENT</ion-label>
           </ion-item-divider>
-          <ion-item *ngIf="order.customer.addresses"><b>Nom: {{order.customer.addresses[0].name | titlecase }}</b></ion-item>
-          <ion-item *ngIf="order.customer.addresses"><b>Adresse:</b> {{order.customer.addresses[0].street}}</ion-item>
-          <ion-item *ngIf="order.customer.addresses"><b>Ville:</b> {{order.customer.addresses[0].city}}</ion-item>
-          <ion-item *ngIf="order.customer.addresses"><b>Code postal:</b> {{order.customer.addresses[0].zipCode}}</ion-item>
-          <ion-item *ngIf="order.customer.addresses && order.customer.comment"><b>Commentaire:</b> {{order.customer.comment}}</ion-item>
-          <ion-item *ngIf="order.customer.addresseses"><b>Téléphone:</b> <a style="text-decoration: none" href="tel:{{order.customer.name}}">{{order.customer.name}}</a></ion-item>
-          <ion-item>
+          <ion-item lines="none" *ngIf="order.customer.addresses"><b>Nom: {{order.customer.addresses[0].name | titlecase }}</b></ion-item>
+          <ion-item lines="none" *ngIf="order.customer.addresses"><b>Adresse:</b> {{order.customer.addresses[0].street}}</ion-item>
+          <ion-item lines="none" *ngIf="order.customer.addresses"><b>Ville:</b> {{order.customer.addresses[0].city}}</ion-item>
+          <ion-item lines="none" *ngIf="order.customer.addresses"><b>Code postal:</b> {{order.customer.addresses[0].zipCode}}</ion-item>
+          <ion-item lines="none" *ngIf="order.comment"><b>Commentaire:</b> {{order.customer.addresses[0].comment}}</ion-item>
+          <ion-item lines="none" *ngIf="order.customer.phone"><b>Téléphone:</b> <a style="text-decoration: none" href="tel:{{order.customer.phone}}">{{order.customer.phone}}</a></ion-item>
+          <ion-item lines="none">
             <h5>Navigation</h5>
             <div *ngIf="order.customer.addresses"><a (click)="linkToAddresses('' + order.customer.addresses[0].street + ', ' + order.customer.addresses[0].zipCode + ' ' + order.customer.addresses[0].city)">{{order.customer.addresses[0].street}}, {{order.customer.addresses[0].zipCode}} {{order.customer.addresses[0].city}}</a></div>
           </ion-item>

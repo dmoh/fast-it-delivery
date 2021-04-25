@@ -56,13 +56,15 @@ export class AvailableOrdersPage implements OnInit {
     return localStorage.getItem('username') ?? "";
   }
 
+  public folder: string;
+
   // tslint:disable-next-line:max-line-length
   // public orders: Array<{ restaurant: string; order: number ; dateTake: string; preparingTime: string, delivery_cost: number, tip: number, fastItBonus: number}> = [];//
   constructor(private router: Router,
-              public alertController: AlertController,
+              private alertController: AlertController,
               private authenticate: AuthenticationService,
               private deliveryService: DeliveryService,
-              private activatedRoute: ActivatedRoute) {
+              private activatedRoute: ActivatedRoute ) {
                 console.log('status deliverer controller', this.statusDeliverer);  }
 
   doRefresh(event) {
@@ -80,6 +82,7 @@ export class AvailableOrdersPage implements OnInit {
     const source = timer(4000, 7000);
     this.statusDeliverer = localStorage.getItem("statusDeliverer") == "true";
     console.log('status deliverer ngOninit', this.statusDeliverer);
+    this.folder = this.activatedRoute.snapshot.paramMap.get('id');
     
     this.getOrderAvaible();
   }

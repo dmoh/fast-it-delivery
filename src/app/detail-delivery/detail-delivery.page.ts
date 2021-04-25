@@ -45,7 +45,6 @@ export class DetailDeliveryPage implements OnInit {
     this.order = new Order();
     this.order.business = new Restaurant();
     this.order.customer = new User();
-
   }
 
   ngOnInit() {

@@ -24,8 +24,8 @@ export class LoginPage implements OnInit {
     this.auth.login(this.email, this.password)
         .subscribe((res) => {
         if (res === true) {
-          this.router.navigate(['overview']);
           // console.warn('test', res);
+          this.router.navigate(['overview']);
         }
         else {this.error = "Vous n avez pas de profil Livreur"}
         });

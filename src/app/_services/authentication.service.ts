@@ -4,16 +4,31 @@ import {map} from "rxjs/operators";
 import jwt_decode from "jwt-decode";
 import {environment} from "../../environments/environment";
 import {Router} from '@angular/router';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ToastController } from '@ionic/angular';
+import { Deliverer } from '@app/_models/deliverer';
+import { User } from '@app/_models/user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
+  private currentUserSubject: BehaviorSubject<Deliverer>;
+  public get currentUserValue(): Deliverer {
+    return this.currentUserSubject?.value;
+  }
+  public headers: HttpHeaders;
+  public get tokenUserCurrent(): string {
+        // console.warn(JSON.parse(localStorage.getItem('currentUser')));
+        return JSON.parse(localStorage.getItem('currentUser')); // this.currentUserSubject.value.token;
+  }
+  public urlApi: string = environment.apiUrl;
+
 
   constructor(private http: HttpClient, private router: Router, public toastController: ToastController) { 
     const token = JSON.parse(localStorage.getItem('currentUser'));
+    this.currentUserSubject = new BehaviorSubject<Deliverer>(JSON.parse(localStorage.getItem('currentUser')));
+
     this.headers = new HttpHeaders({
         'Content-Type': 'application/json'
     });
@@ -24,14 +39,6 @@ export class AuthenticationService {
       });
     }
   }
-
-  public headers: HttpHeaders;
-  public get tokenUserCurrent(): string {
-        console.warn(JSON.parse(localStorage.getItem('currentUser')));
-        return JSON.parse(localStorage.getItem('currentUser')); // this.currentUserSubject.value.token;
-  }
-
-  urlApi: string = environment.apiUrl;
 
   login(email: string, password: string) {
     const token = JSON.parse(localStorage.getItem('currentUser'));
@@ -48,6 +55,7 @@ export class AuthenticationService {
     const optionRequete = {
       headers: this.headers
     };
+    console.log("optionRequete", optionRequete);
 
     return this.http.post<any>(`${environment.apiUrl}/authentication_token`, { email, password }, optionRequete)
       .pipe(map((user : any) => {
@@ -102,6 +110,7 @@ export class AuthenticationService {
     this.setDelivererStatus(false)
     .subscribe( x => {
       localStorage.clear();
+      this.currentUserSubject.next(null);
       this.presentToastWithOptions("","log-out-outline","Vous avez été déconnecté");
       this.router.navigate(['login']);
     });
@@ -155,7 +164,7 @@ export class AuthenticationService {
     await toast.present();
 
     const { role } = await toast.onDidDismiss();
-    console.log('onDidDismiss resolved with role', role);
+    // console.log('onDidDismiss resolved with role', role);
   }
 
 

@@ -4,6 +4,8 @@ import {Router} from "@angular/router";
 import {UserService} from "@app/_services/user.service";
 import { AuthenticationService } from '@app/_services/authentication.service';
 import { environment } from '@environments/environment';
+import { ActionsService } from '@app/_services/actions.service';
+import { Deliverer } from '@app/_models/deliverer';
 
 @Component({
   selector: 'app-overview',
@@ -21,6 +23,10 @@ export class OverviewPage implements OnInit {
 
   _statusDeliverer :boolean;
 
+  get userInfo(): Deliverer {
+    return <Deliverer> JSON.parse( localStorage.getItem("userInfo") );
+  }
+
   get statusDeliverer() {
     // return localStorage.getItem("statusDeliverer") == "true";
     return this._statusDeliverer;
@@ -30,8 +36,32 @@ export class OverviewPage implements OnInit {
     this._statusDeliverer = statusDelivery;
   }
 
+  get listSector(): any {
+    return [
+      {
+        text: 'Destructive',
+        role: 'destructive',
+        handler: () => {
+          console.log('Destructive clicked');
+        }
+      },{
+        text: 'Archive',
+        handler: () => {
+          console.log('Archive clicked');
+        }
+      },{
+        text: 'Cancel',
+        role: 'cancel',
+        handler: () => {
+          console.log('Cancel clicked');
+        }
+      }
+    ];
+  }
+
   constructor(private  deliveryService: DeliveryService, private userService: UserService,
-              private router: Router, private authenticate: AuthenticationService) { }
+              private router: Router, private authenticate: AuthenticationService,
+              private actionsService: ActionsService) { }
 
   ngOnInit() {
     this.statusDeliverer = localStorage.getItem("statusDeliverer") == "true";
@@ -57,7 +87,11 @@ export class OverviewPage implements OnInit {
         this.router.navigate(['pending-orders'])
         break;
       case 'order-avalaible':
-        this.router.navigate(['available-orders'])
+        this.actionsService.presentActionSheet("Commandes disponibles");
+        // this.router.navigate(['available-orders'])
+        break;
+      case 'order-delivered':
+        this.router.navigate(['delivered-orders'])
         break;
     }
   }
@@ -75,7 +109,11 @@ export class OverviewPage implements OnInit {
             localStorage.setItem('statusDeliverer', this.statusDeliverer ? "true" : "false");
             console.log('getitem',localStorage.getItem("statusDeliverer"));
             if ( this.statusDeliverer && this.statusDeliverer != oldStatus) {
+              this.authenticate.presentToastWithOptions("","eye",`Vous êtes en mode ${this.fastOn}`);
               this.goTo('order-avalaible');
+            } else {
+              if (this.statusDeliverer != oldStatus)
+                this.authenticate.presentToastWithOptions("","eye-off-outline",`Vous êtes en mode ${this.fastOff}`);
             }
           }
         });

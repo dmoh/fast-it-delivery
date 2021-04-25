@@ -36,13 +36,11 @@
       <ion-item>
         <ion-row style="align-items: center;width: 100%" class="ion-text-center" >
           <ion-col>
-            <!-- <ion-label>Hors ligne</ion-label> -->
             <ion-label>{{fastOff}}</ion-label>
           </ion-col>
         <!-- Pour l'affichage du toggle on vérifiera en base le statut du livreur,
         si il est inactif on grise le toggole sinon on le met en ligne-->
           <ion-col>
-            <!-- <ion-toggle [(ngModel)]="statusDeliverer" (ionChange)="onChangeStatus()" color ="success"></ion-toggle> -->
             <ion-toggle [(ngModel)]="statusDeliverer" (ionChange)="onChangeStatus()" color ="success"></ion-toggle>
           </ion-col>
           <ion-col>
@@ -54,18 +52,31 @@
       <ion-row>
         <ion-col>
           <div class="ion-text-center ion-margin-top">
-            <ion-button (click)="goTo('order-online')" size="large">Commandes en cours</ion-button>
+            <ion-button (click)="goTo('order-online')" full size="block">Commandes en cours</ion-button>
           </div>
         </ion-col>
       </ion-row>
-      <ion-row>
+
+      <ion-row *ngIf="statusDeliverer">
         <ion-col>
           <div class="ion-text-center">
-            <ion-button (click)="goTo('order-avalaible')" size="large">
+            <ion-button (click)="goTo('order-avalaible')" block size="block">
               <ion-label>
                 Commandes disponibles
               </ion-label>
-              <ion-badge>4</ion-badge>
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+      
+      <ion-row *ngIf="!statusDeliverer">
+        <ion-col>
+          <div class="ion-text-center">
+            <ion-button (click)="goTo('order-delivered')" block size="block">
+              <ion-label>
+                Commandes terminées
+              </ion-label>
+              <ion-badge>{{countOrderCurrentMonth}}</ion-badge>
             </ion-button>
           </div>
         </ion-col>

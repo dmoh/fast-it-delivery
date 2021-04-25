@@ -1,9 +1,8 @@
 import { User } from "./user";
 
 export class Deliverer extends User {
-    deliveryName: string;
-    workingTime: Date;
-    workingTimeTwo: Date;
-    phone: string;
-    siret: string;
+    deliveryName?: string;
+    status?: boolean;
+    siret?: string;
+    sectors?: Array<any>;
 }
