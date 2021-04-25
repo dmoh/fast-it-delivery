@@ -8,7 +8,7 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'sector/:id',
+    path: 'sector/:id/:sector',
     loadChildren: () => import('./sector/sector.module').then( m => m.SectorPageModule)
   },
   {

@@ -128,7 +128,7 @@ export class AppComponent implements OnInit {
       ];
 
       deliverer?.sectors?.forEach( sector => {
-        const urlSector = `/sector/${(<string>sector.name).trim().replace(' ','')}`;
+        const urlSector = `/sector/${sector.id}/${(<string>sector.name).trim().replace(' ','')}`;
         this.appPages.push({
           title: `Commandes ${sector.name}`,
           url: urlSector,

@@ -16,6 +16,7 @@ import { timer } from 'rxjs';
 })
 export class SectorPage implements OnInit {
   public sector: string;
+  public idSector: string;
   uploadResponse = { status: '', message: '', filePath: '' };
   schedulePrepartionTimes: any[] = [];
   deliverer: Deliverer;
@@ -66,7 +67,8 @@ export class SectorPage implements OnInit {
               }
 
   ngOnInit() {
-    this.sector = this.activatedRoute.snapshot.paramMap.get('id');
+    this.sector = this.activatedRoute.snapshot.paramMap.get('sector');
+    this.idSector = this.activatedRoute.snapshot.paramMap.get('id');
     this.deliverer = new Deliverer();
     this.deliverer.orders = [];
     // const source = timer(4000, 7000);
@@ -85,7 +87,7 @@ export class SectorPage implements OnInit {
   }
 
   getOrderAvailable() {
-    const user = {user : this.userName};
+    const user = {user : this.userName, idSector: this.idSector};
     this.deliveryService.getOrderAvailable(user).subscribe((response) => {
       console.log(response);
       this.orders = response.orders;

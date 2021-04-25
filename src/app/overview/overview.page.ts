@@ -39,7 +39,7 @@ export class OverviewPage implements OnInit {
   get listSector(): any {
     let listSector = new Array<any>();
     this.userInfo?.sectors?.forEach( sector => {
-      const urlSector = `/sector/${(<string>sector.name).trim().replace(' ','')}`;
+      const urlSector = `/sector/${sector.id}/${(<string>sector.name).trim().replace(' ','')}`;
       listSector.push({
         text: `Commandes ${sector.name}`,
         role: `Commandes ${sector.name}`,

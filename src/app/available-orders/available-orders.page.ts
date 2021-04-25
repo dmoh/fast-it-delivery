@@ -57,6 +57,7 @@ export class AvailableOrdersPage implements OnInit {
   }
 
   public sector: string;
+  public idSector: string;
 
   // tslint:disable-next-line:max-line-length
   // public orders: Array<{ restaurant: string; order: number ; dateTake: string; preparingTime: string, delivery_cost: number, tip: number, fastItBonus: number}> = [];//
@@ -82,13 +83,14 @@ export class AvailableOrdersPage implements OnInit {
     const source = timer(4000, 7000);
     this.statusDeliverer = localStorage.getItem("statusDeliverer") == "true";
     console.log('status deliverer ngOninit', this.statusDeliverer);
-    this.sector = this.activatedRoute.snapshot.paramMap.get('id');
+    this.sector = this.activatedRoute.snapshot.paramMap.get('sector');
+    this.idSector = this.activatedRoute.snapshot.paramMap.get('id');
     
     this.getOrderAvailable();
   }
 
   getOrderAvailable() {
-    const user = {user : this.userName};
+    const user = {user : this.userName, idSector: this.idSector};
     this.deliveryService.getOrderAvailable(user).subscribe((response) => {
       console.log(response);
       this.orders = response.orders;
