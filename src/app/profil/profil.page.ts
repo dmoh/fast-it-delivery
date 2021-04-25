@@ -3,6 +3,7 @@ import { Deliverer } from '@app/_models/deliverer';
 import { ActionsService } from '@app/_services/actions.service';
 import { AuthenticationService } from '@app/_services/authentication.service';
 import { DeliveryService } from '@app/_services/delivery.service';
+import { UserService } from '@app/_services/user.service';
 
 @Component({
   selector: 'app-profil',
@@ -23,7 +24,8 @@ export class ProfilPage implements OnInit {
   constructor(
     private deliveryService: DeliveryService,
     private actionsService: ActionsService,
-    private authenticate: AuthenticationService) { }
+    private authenticate: AuthenticationService,
+    private userService: UserService) { }
   imgLogo: string = "https://fast-it.fr/assets/logo_fastit.jpg";
 
   ngOnInit() {
@@ -80,14 +82,14 @@ export class ProfilPage implements OnInit {
     }
 
     saveDeliverer$.subscribe( success => this.successSaved(success) );
-
   }
 
   successSaved(success: any) {
-    // this.isKbis = (res.etablissement.siret === this.userInfo.siret.toString());
-    // this.isSave = (true && this.isKbis);
-    this.actionsService.presentToast(ProfilPage.notifInfoSaved);
-    console.log("save deliverer info success", success);
+    // this.userService.getDeliverer("").subscribe( deliverer => {
+      localStorage.setItem("userInfo", JSON.stringify(this.userInfo));
+      this.actionsService.presentToast(ProfilPage.notifInfoSaved);
+      console.log("save deliverer info success", success);
+    // });
   }
 
   onChangePassword() {

@@ -1,24 +1,23 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {AlertController} from '@ionic/angular';
-import {Observable, timer} from 'rxjs';
-import {Restaurant} from '@app/_models/restaurant';
-import {Deliverer} from '@app/_models/deliverer';
-import {Order} from '@app/_models/order';
-import * as fasteatconst from '@app/_util/fasteat-constants';
-import {AuthenticationService} from '@app/_services/authentication.service';
-import {DeliveryService} from '@app/_services/delivery.service';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Deliverer } from '@app/_models/deliverer';
+import { Order } from '@app/_models/order';
+import { AuthenticationService } from '@app/_services/authentication.service';
+import { DeliveryService } from '@app/_services/delivery.service';
 import { environment } from '@environments/environment';
+import { AlertController } from '@ionic/angular';
+import * as fasteatconst from '@app/_util/fasteat-constants';
+import { timer } from 'rxjs';
 
 @Component({
-  selector: 'app-available-orders',
-  templateUrl: './available-orders.page.html',
-  styleUrls: ['./available-orders.page.scss'],
+  selector: 'app-sector',
+  templateUrl: './sector.page.html',
+  styleUrls: ['./sector.page.scss'],
 })
-export class AvailableOrdersPage implements OnInit {
+export class SectorPage implements OnInit {
+  public sector: string;
   uploadResponse = { status: '', message: '', filePath: '' };
   schedulePrepartionTimes: any[] = [];
-  commerce: Restaurant;
   deliverer: Deliverer;
   orders: any[] = [];
   order: Order;
@@ -56,8 +55,6 @@ export class AvailableOrdersPage implements OnInit {
     return localStorage.getItem('username') ?? "";
   }
 
-  public sector: string;
-
   // tslint:disable-next-line:max-line-length
   // public orders: Array<{ restaurant: string; order: number ; dateTake: string; preparingTime: string, delivery_cost: number, tip: number, fastItBonus: number}> = [];//
   constructor(private router: Router,
@@ -65,7 +62,18 @@ export class AvailableOrdersPage implements OnInit {
               private authenticate: AuthenticationService,
               private deliveryService: DeliveryService,
               private activatedRoute: ActivatedRoute ) {
-                console.log('status deliverer controller', this.statusDeliverer);  }
+                console.log('status deliverer controller', this.statusDeliverer);  
+              }
+
+  ngOnInit() {
+    this.sector = this.activatedRoute.snapshot.paramMap.get('id');
+    this.deliverer = new Deliverer();
+    this.deliverer.orders = [];
+    // const source = timer(4000, 7000);
+    this.statusDeliverer = localStorage.getItem("statusDeliverer") == "true";
+    console.log('status deliverer ngOninit', this.statusDeliverer);
+    this.getOrderAvaible();
+  }
 
   doRefresh(event) {
     console.log('Begin async operation');
@@ -74,17 +82,6 @@ export class AvailableOrdersPage implements OnInit {
       console.log('Async operation has ended');
       event.target.complete();
     }, 2000);
-  }
-
-  ngOnInit() {
-    this.deliverer = new Deliverer();
-    this.deliverer.orders = [];
-    const source = timer(4000, 7000);
-    this.statusDeliverer = localStorage.getItem("statusDeliverer") == "true";
-    console.log('status deliverer ngOninit', this.statusDeliverer);
-    this.sector = this.activatedRoute.snapshot.paramMap.get('id');
-    
-    this.getOrderAvaible();
   }
 
   getOrderAvaible() {
@@ -211,4 +208,5 @@ export class AvailableOrdersPage implements OnInit {
   onSubmit() {
     this.router.navigate(['pending-orders']);
   }
+
 }

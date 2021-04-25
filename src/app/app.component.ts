@@ -6,6 +6,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { environment } from '@environments/environment';
 import { UserService } from './_services/user.service';
 import { Deliverer } from './_models/deliverer';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -28,7 +29,7 @@ export class AppComponent implements OnInit {
   * @description userInfo recuperé dans le localstorage "stocké à la connexion"
   */
   public get userInfo (): Deliverer {
-    console.log("userInfo", <Deliverer> JSON.parse(localStorage.getItem('userInfo')));
+    // console.log("userInfo", <Deliverer> JSON.parse(localStorage.getItem('userInfo')));
     return <Deliverer> JSON.parse(localStorage.getItem('userInfo')) ?? null;
   }
 
@@ -66,7 +67,7 @@ export class AppComponent implements OnInit {
       url: '/delivered-orders',
       icon: 'checkmark-done',
       displayDefault: true,
-      // url: '/folder/delivered-orders',
+      // url: '/sector/delivered-orders',
       // icon: 'heart'
     },
   ];
@@ -84,7 +85,8 @@ export class AppComponent implements OnInit {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router,
   ) {
     this.initializeApp();
     this.paramIndex = this.appPages.length;
@@ -96,9 +98,10 @@ export class AppComponent implements OnInit {
       this.splashScreen.hide();
     });
   }
+  
 
   ngOnInit() {
-    const path = window.location.pathname.split('folder/')[1];
+    const path = window.location.pathname.split('sector/')[1];
     if (path !== undefined) {
       this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
     }
@@ -107,6 +110,42 @@ export class AppComponent implements OnInit {
       console.log("userInfo Deliverer", <Deliverer> deliverer);
       console.log("userInfo", JSON.stringify(deliverer));
       localStorage.setItem("userInfo", JSON.stringify(deliverer));
+
+      this.appPages = [
+        {
+          title: 'Vue Globale',
+          url: '/overview',
+          icon: 'eye',
+          displayDefault: true,
+          // icon: 'mail'
+        },
+        {
+          title: 'Commandes en cours',
+          url: '/pending-orders',
+          icon: 'bicycle',
+          displayDefault: true,
+        },
+      ];
+
+      deliverer?.sectors?.forEach( sector => {
+        const urlSector = `/sector/${(<string>sector.name).trim().replace(' ','')}`;
+        this.appPages.push({
+          title: `Commandes ${sector.name}`,
+          url: urlSector,
+          icon: 'flash',
+        })
+      });
+
+      this.appPages.push(
+        {
+          title: 'Commandes livrées',
+          url: '/delivered-orders',
+          icon: 'checkmark-done',
+          displayDefault: true,
+        },
+      )
+
+      this.indexParams = this.appPages.length+1
     });
   }
 }

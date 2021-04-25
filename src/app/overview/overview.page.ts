@@ -24,7 +24,7 @@ export class OverviewPage implements OnInit {
   _statusDeliverer :boolean;
 
   get userInfo(): Deliverer {
-    return <Deliverer> JSON.parse( localStorage.getItem("userInfo") );
+    return <Deliverer> JSON.parse( localStorage.getItem("userInfo") ) ?? null;
   }
 
   get statusDeliverer() {
@@ -37,26 +37,18 @@ export class OverviewPage implements OnInit {
   }
 
   get listSector(): any {
-    return [
-      {
-        text: 'Destructive',
-        role: 'destructive',
-        handler: () => {
-          console.log('Destructive clicked');
-        }
-      },{
-        text: 'Archive',
-        handler: () => {
-          console.log('Archive clicked');
-        }
-      },{
-        text: 'Cancel',
-        role: 'cancel',
-        handler: () => {
-          console.log('Cancel clicked');
-        }
-      }
-    ];
+    let listSector = new Array<any>();
+    this.userInfo?.sectors?.forEach( sector => {
+      const urlSector = `/sector/${(<string>sector.name).trim().replace(' ','')}`;
+      listSector.push({
+        text: `Commandes ${sector.name}`,
+        role: `Commandes ${sector.name}`,
+        handler:() => this.router.navigate([urlSector])
+      })
+    }) 
+    console.log("listSector",listSector);
+
+    return listSector;
   }
 
   constructor(private  deliveryService: DeliveryService, private userService: UserService,
@@ -67,12 +59,18 @@ export class OverviewPage implements OnInit {
     this.statusDeliverer = localStorage.getItem("statusDeliverer") == "true";
     this.rangeDate = {dtstart : new Date().toLocaleDateString(), dtend : new Date().toLocaleDateString()};
 
+    if (this.userInfo) {
+      this.userService.getDeliverer("").subscribe( deliverer => {
+       localStorage.setItem("userInfo", JSON.stringify(deliverer));
+     });
+    }
     // setTimeout(() => {
     const getOrderSub = this.deliveryService.getOrderAnalize(1, this.rangeDate)
         .subscribe((response) => {
           console.log(response);
           this.amountOrderCurrentMonth = ((response.delivery_cost).toFixed(2)).replace('.', ',');
           this.countOrderCurrentMonth = response.count;
+          this.userInfo;
           setTimeout(() => {
           }, 0);
         });
@@ -87,7 +85,7 @@ export class OverviewPage implements OnInit {
         this.router.navigate(['pending-orders'])
         break;
       case 'order-avalaible':
-        this.actionsService.presentActionSheet("Commandes disponibles");
+        this.actionsService.presentActionSheet("Commandes disponibles", this.listSector);
         // this.router.navigate(['available-orders'])
         break;
       case 'order-delivered':
@@ -102,8 +100,14 @@ export class OverviewPage implements OnInit {
         .subscribe((response) => {
           if (response.ok) {
             // pr eviter de retoutner sur la vue si status n'as pas changé
+            try{
+              this.userService.getDeliverer("").subscribe( deliverer => {
+                localStorage.setItem("userInfo", JSON.stringify(deliverer));
+              });
+            } catch {
+              console.log("err get userInfo");
+            }
             const oldStatus = localStorage.getItem("statusDeliverer") == "true";
-
             console.log('ok en ligne');
             console.log('getitem',localStorage.getItem("statusDeliverer"));
             localStorage.setItem('statusDeliverer', this.statusDeliverer ? "true" : "false");
@@ -112,7 +116,7 @@ export class OverviewPage implements OnInit {
               this.authenticate.presentToastWithOptions("","eye",`Vous êtes en mode ${this.fastOn}`);
               this.goTo('order-avalaible');
             } else {
-              if (this.statusDeliverer != oldStatus)
+              if (this.statusDeliverer != oldStatus){}
                 this.authenticate.presentToastWithOptions("","eye-off-outline",`Vous êtes en mode ${this.fastOff}`);
             }
           }
