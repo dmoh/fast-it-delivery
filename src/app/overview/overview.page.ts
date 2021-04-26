@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {DeliveryService} from "@app/_services/delivery.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {UserService} from "@app/_services/user.service";
 import { AuthenticationService } from '@app/_services/authentication.service';
 import { environment } from '@environments/environment';
@@ -13,7 +13,8 @@ import { Deliverer } from '@app/_models/deliverer';
   styleUrls: ['./overview.page.scss'],
 })
 export class OverviewPage implements OnInit {
-  imgLogo: string = "https://fast-it.fr/assets/logo_fastit.jpg";
+  // imgLogo: string = "https://fast-it.fr/assets/logo_fastit.jpg";
+  imgLogo: string = "/assets/fast_it.png";
   amountOrderCurrentMonth :number;
   countOrderCurrentMonth :number;
   // statusDeliverer :boolean;
@@ -21,7 +22,7 @@ export class OverviewPage implements OnInit {
   fastOff = environment.fastOff;
   fastOn = environment.fastOnline;
 
-  _statusDeliverer :boolean;
+  _statusDeliverer :boolean = false;
 
   get userInfo(): Deliverer {
     return <Deliverer> JSON.parse( localStorage.getItem("userInfo") ) ?? null;
@@ -53,13 +54,22 @@ export class OverviewPage implements OnInit {
 
   constructor(private  deliveryService: DeliveryService, private userService: UserService,
               private router: Router, private authenticate: AuthenticationService,
-              private actionsService: ActionsService) { }
+              private activatedRout: ActivatedRoute,
+              private actionsService: ActionsService) { 
+      this.activatedRout.queryParams.subscribe(params => {
+        console.log(params);
+      // if (params != null) {
+      //   params = null;
+      //   this.router.navigate(["overview"]);
+      // };
+    });
+  }
 
   ngOnInit() {
     this.statusDeliverer = localStorage.getItem("statusDeliverer") == "true";
     this.rangeDate = {dtstart : new Date().toLocaleDateString(), dtend : new Date().toLocaleDateString()};
 
-    if (this.userInfo) {
+    if (!this.userInfo) {
       this.userService.getDeliverer("").subscribe( deliverer => {
        localStorage.setItem("userInfo", JSON.stringify(deliverer));
      });
@@ -94,32 +104,31 @@ export class OverviewPage implements OnInit {
     }
   }
 
-  onChangeStatus(){
+  async onChangeStatus(){
     console.log("onChangeStatus", this.statusDeliverer);
     this.userService.setDelivererStatus(this.statusDeliverer)
-        .subscribe((response) => {
+        .subscribe(async (response) => {
           if (response.ok) {
             // pr eviter de retoutner sur la vue si status n'as pas changé
-            try{
-              this.userService.getDeliverer("").subscribe( deliverer => {
-                localStorage.setItem("userInfo", JSON.stringify(deliverer));
-              });
-            } catch {
-              console.log("err get userInfo");
-            }
+            const deliverer = await this.userService.getDeliverer("").toPromise();
+            // .then( deliverer => {
+              localStorage.setItem("userInfo", JSON.stringify(deliverer));
+            // });
+
             const oldStatus = localStorage.getItem("statusDeliverer") == "true";
-            console.log('ok en ligne');
-            console.log('getitem',localStorage.getItem("statusDeliverer"));
             localStorage.setItem('statusDeliverer', this.statusDeliverer ? "true" : "false");
-            console.log('getitem',localStorage.getItem("statusDeliverer"));
             if ( this.statusDeliverer && this.statusDeliverer != oldStatus) {
-              this.authenticate.presentToastWithOptions("","eye",`Vous êtes en mode ${this.fastOn}`);
+              this.actionsService.presentToastWithOptions("","eye",`Vous êtes en mode ${this.fastOn}`,"top","",null,1000);
               this.goTo('order-avalaible');
             } else {
               if (this.statusDeliverer != oldStatus){}
-                this.authenticate.presentToastWithOptions("","eye-off-outline",`Vous êtes en mode ${this.fastOff}`);
+                this.actionsService.presentToastWithOptions("","eye-off-outline",`Vous êtes en mode ${this.fastOff}`,"top","",null,1000);
             }
           }
+        }, err => {
+          console.log("err", err);
+          this.actionsService.presentToastWithOptions("","alert-circle-outline", `${err.name} : status ${err.statusText}`, "top", "",null,5000)
+          this.actionsService.presentToastWithOptions("","alert-circle-outline", `Probleme de connexion, veuillez vous reconnecter!`, "top", "",null)
         });
   }
 

@@ -30,7 +30,7 @@
                     (click)="linkToAddresses('' + order.business.street + ', ' + order.business.zipCode + ' ' + order.business.city)">{{order.business.street}}, {{order.business.zipCode}} {{order.business.city}}</a></div>
           </ion-item>
 
-          <ion-row>
+          <ion-row *ngIf="!isDelivering">
               <ion-col class="ion-margin-top ion-margin-bottom ion-text-center">
                   <ion-button (click)="onTakenDelivery()" size="medium">Récupérer commande</ion-button><p></p>
               </ion-col>

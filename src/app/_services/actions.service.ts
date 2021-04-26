@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ModalPageComponent } from '@app/core/modal-page/modal-page.component';
-import { ActionSheetController, ModalController, ToastController } from '@ionic/angular';
+import { ActionSheetController, AlertController, ModalController, ToastController } from '@ionic/angular';
+import { Observable } from 'rxjs';
+import { subscribeOn } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +11,7 @@ export class ActionsService {
 
   constructor(
     public actionSheetController: ActionSheetController,
+    public alertController: AlertController,
     public toastController: ToastController,
     public modalController: ModalController
   ) { }
@@ -21,21 +24,16 @@ export class ActionsService {
     })
 
     buttons = buttons.length != 0 ? buttons : [{
-          text: 'Destructive',
-          role: 'destructive',
+          text: 'Menu1',
+          role: 'menu1',
           handler: () => {
-            console.log('Destructive clicked');
+            console.log('Menu1 clicked');
           }
-        },{
-          text: 'Archive',
+        },,{
+          text: 'Menu2',
+          role: 'menu2',
           handler: () => {
-            console.log('Archive clicked');
-          }
-        },{
-          text: 'Cancel',
-          role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
+            console.log('Menu2 clicked');
           }
         }]
     ;
@@ -45,6 +43,34 @@ export class ActionsService {
       buttons: buttons,
     });
     actionSheet.present();
+  }
+ 
+  async presentAlertConfirm(message: string, action1: Observable<any> = null,  action2: any = null) {
+    const alert = await this.alertController.create({
+    header: 'CONFIRMATION',
+      message,
+      buttons: [
+        {
+          text: 'ANNULER',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (x) => {
+            console.log('cancel');
+            action2;
+          }
+        }, {
+          text: 'ACCEPTER',
+          handler: () => {
+            console.warn('accept');
+            action1?.subscribe();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+    const result = await alert.onDidDismiss();
+    console.log(result);
   }
 
   public async presentToast(message: string = 'Your settings have been saved.', duration: number = 2000) {
@@ -61,7 +87,7 @@ export class ActionsService {
   position: any = "bottom",
   textStart: any = "",
   options = null,
-  duration: number = 2000) {
+  duration: number = null) {
     const buttonSuccess : any = {
         // icon: 'star',
         // side: 'start',
@@ -91,13 +117,16 @@ export class ActionsService {
         buttonSuccess, buttonCancel
       ]
     });
+    if (duration) {
+      toast.duration = duration;
+    }
     await toast.present();
 
     const { role } = await toast.onDidDismiss();
     console.log('onDidDismiss resolved with role', role);
   }
 
-  async presentModal() {
+  public async presentModal() {
     const modal = await this.modalController.create({
       component: ModalPageComponent,
       cssClass: 'my-custom-class',

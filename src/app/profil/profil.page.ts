@@ -26,7 +26,8 @@ export class ProfilPage implements OnInit {
     private actionsService: ActionsService,
     private authenticate: AuthenticationService,
     private userService: UserService) { }
-  imgLogo: string = "https://fast-it.fr/assets/logo_fastit.jpg";
+   // imgLogo: string = "https://fast-it.fr/assets/logo_fastit.jpg";
+   imgLogo: string = "/assets/fast_it.png";
 
   ngOnInit() {
     this._userInfo = <Deliverer> JSON.parse( localStorage.getItem("userInfo"));

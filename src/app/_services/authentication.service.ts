@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {map} from "rxjs/operators";
+import {catchError, map} from "rxjs/operators";
 import jwt_decode from "jwt-decode";
 import {environment} from "../../environments/environment";
 import {Router} from '@angular/router';
@@ -8,6 +8,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { ToastController } from '@ionic/angular';
 import { Deliverer } from '@app/_models/deliverer';
 import { User } from '@app/_models/user';
+import { ActionsService } from './actions.service';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,7 @@ export class AuthenticationService {
   public urlApi: string = environment.apiUrl;
 
 
-  constructor(private http: HttpClient, private router: Router, public toastController: ToastController) { 
+  constructor(private http: HttpClient, private router: Router, public actionsService: ActionsService) { 
     const token = JSON.parse(localStorage.getItem('currentUser'));
     this.currentUserSubject = new BehaviorSubject<Deliverer>(JSON.parse(localStorage.getItem('currentUser')));
 
@@ -58,33 +59,40 @@ export class AuthenticationService {
     console.log("optionRequete", optionRequete);
 
     return this.http.post<any>(`${environment.apiUrl}/authentication_token`, { email, password }, optionRequete)
-      .pipe(map((user : any) => {
-        // store user details and jwt token in local storage to keep user logged in between page refreshes
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        // this.currentUserSubject.next(user);
-        const jwtDecode: any = jwt_decode(user.token);
-        console.log("jwtDecode", jwtDecode);
-          
-        if (jwtDecode.username) {
-          localStorage.setItem('username', jwtDecode.username);
-        }
-
-        if (jwtDecode.roles) {
-          const roles = jwtDecode.roles;
-          if (
-              roles.indexOf('ROLE_SUPER_ADMIN') !== -1
-              || roles.indexOf('ROLE_DELIVERER') !== -1
-          ) {
-            // add icon and restaurant
-            localStorage.setItem('roles', JSON.stringify(roles));
-            this.presentToastWithOptions("",'log-in',"Vous êtes connecté", "bottom" );
-            return true;
-            // this.currentRolesSubject.next(roles);
+      .pipe(
+        map((user : any) => {
+          // store user details and jwt token in local storage to keep user logged in between page refreshes
+          localStorage.setItem('currentUser', JSON.stringify(user));
+          // this.currentUserSubject.next(user);
+          const jwtDecode: any = jwt_decode(user.token);
+          console.log("jwtDecode", jwtDecode);
+            
+          if (jwtDecode.username) {
+            localStorage.setItem('username', jwtDecode.username);
           }
-          this.presentToastWithOptions("", 'log-in', "Vous êtes connecté", "bottom");
-          return false;
-        }
-      }));
+
+          if (jwtDecode.roles) {
+            const roles = jwtDecode.roles;
+            if (
+                roles.indexOf('ROLE_SUPER_ADMIN') !== -1
+                || roles.indexOf('ROLE_DELIVERER') !== -1
+            ) {
+              // add icon and restaurant
+              localStorage.setItem('roles', JSON.stringify(roles));
+              this.actionsService.presentToastWithOptions("",'log-in',"Vous êtes connecté", "top","",null,2000);
+              return true;
+              // this.currentRolesSubject.next(roles);
+            }
+            this.actionsService.presentToastWithOptions("", 'log-in', "Vous êtes connecté", "top","",null,2000);
+            return false;
+          }
+        }),
+        catchError(x => {
+          console.log(x);
+          this.actionsService.presentToastWithOptions("", 'alert-circle-outline', x.message, "top","",null,2000);
+          return null;
+        })
+      );
   }
 
   setDelivererStatus(status: boolean): Observable<any> {
@@ -107,65 +115,24 @@ export class AuthenticationService {
   }
 
   logout() {
-    this.setDelivererStatus(false)
-    .subscribe( x => {
+    const logOutAction = this.setDelivererStatus(false).pipe(
+      map( x => this.logOutAction(x) ),
+      catchError( err => this.actionsService.presentToastWithOptions(
+        "","alert-circle-outline",
+        err.message,"top","",null,2000) )
+      );
+
+    this.actionsService.presentAlertConfirm(
+                          '<strong>Etes-vous sur de vouloir vous déconnecter ?</strong>',
+                          logOutAction
+                        );
+  }
+
+  private logOutAction (action: any) {
       localStorage.clear();
       this.currentUserSubject.next(null);
-      this.presentToastWithOptions("","log-out-outline","Vous avez été déconnecté");
+      this.actionsService.presentToastWithOptions("","log-out-outline","Vous avez été déconnecté","top", "", null, 2000);
       this.router.navigate(['login']);
-    });
   }
-
-  public async presentToast(message: string = 'Your settings have been saved.', duration: number = 2000) {
-    const toast = await this.toastController.create({
-      message,
-      duration,
-    });
-    toast.present();
-  }
-
-  public async presentToastWithOptions(header: any = 'Toast header',
-                                icon: any = 'star',
-                                message: any = 'Click to Close',
-                                position: any = "bottom",
-                                textStart: any = "",
-                                options = null,
-                                duration: number = 2000) {
-
-    const buttonSuccess : any = {
-      // icon: 'star',
-      // side: 'start',
-      // icon: 'star',
-      // text: 'Favorite',
-      side: 'start',
-      icon,
-      text: textStart,
-      handler: () => {
-        console.log('Favorite clicked');
-      }
-    };
-
-    const buttonCancel : any = {
-      text: 'x',
-      role: 'cancel',
-      handler: () => {
-        console.log('Cancel clicked');
-      }
-    };
-
-    const toast = await this.toastController.create({
-      header,
-      message,
-      position,
-      buttons: [
-        buttonSuccess, buttonCancel
-      ]
-    });
-    await toast.present();
-
-    const { role } = await toast.onDidDismiss();
-    // console.log('onDidDismiss resolved with role', role);
-  }
-
 
 }

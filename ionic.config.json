@@ -1,7 +1,8 @@
 {
   "name": "fast-it-delivery",
   "integrations": {
-    "cordova": {}
+    "cordova": {},
+    "capacitor": {}
   },
   "type": "angular"
 }

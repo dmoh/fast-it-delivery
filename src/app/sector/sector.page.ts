@@ -8,6 +8,7 @@ import { environment } from '@environments/environment';
 import { AlertController } from '@ionic/angular';
 import * as fasteatconst from '@app/_util/fasteat-constants';
 import { timer } from 'rxjs';
+import { ActionsService } from '@app/_services/actions.service';
 
 @Component({
   selector: 'app-sector',
@@ -62,6 +63,7 @@ export class SectorPage implements OnInit {
               private alertController: AlertController,
               private authenticate: AuthenticationService,
               private deliveryService: DeliveryService,
+              private actionsService: ActionsService,
               private activatedRoute: ActivatedRoute ) {
                 console.log('status deliverer controller', this.statusDeliverer);  
               }
@@ -89,11 +91,12 @@ export class SectorPage implements OnInit {
   getOrderAvailable() {
     const user = {user : this.userName, idSector: this.idSector};
     this.deliveryService.getOrderAvailable(user).subscribe((response) => {
-      console.log(response);
-      this.orders = response.orders;
-      this.orders.forEach( order => {
+      // console.log(response);
+      this.orders = response?.orders;
+      this.orders?.forEach( order => {
         order.amount /=  100;
       });
+      this.actionsService.presentToastWithOptions("","arrow-up-outline", `${this.orders?.length} commandes disponibles`, "bottom");
       console.log(this.orders);
     });
   }
