@@ -34,7 +34,9 @@ export class ForgotpasswordPage implements OnInit {
           }
         });
   }
-  imgLogo: string = "https://fast-it.fr/assets/logo_fastit.jpg";
+   // imgLogo: string = "https://fast-it.fr/assets/logo_fastit.jpg";
+   imgLogo: string = "/assets/fast_it.png";
+  
 
   onLogout() {
     this.authenticate.logout();

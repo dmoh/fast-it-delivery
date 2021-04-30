@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthenticationService} from '@app/_services/authentication.service';
 import {Router} from '@angular/router';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -14,25 +15,25 @@ export class LoginPage implements OnInit {
   constructor(
    private auth: AuthenticationService,
    private router: Router,
-   private authenticate: AuthenticationService,
    ) { }
-  imgLogo: string = "https://fast-it.fr/assets/logo_fastit.jpg";
+   // imgLogo: string = "https://fast-it.fr/assets/logo_fastit.jpg";
+  imgLogo: string = "/assets/fast_it.png";
   ngOnInit() {
   }
 
-  onSubmit() {
-    this.auth.login(this.email, this.password)
-        .subscribe((res) => {
+  async onSubmit() {
+    const res = await this.auth.login(this.email, this.password).toPromise();
+        // .subscribe((res) => {
         if (res === true) {
-          this.router.navigate(['overview']);
           // console.warn('test', res);
-          }
-        else {this.error = "Vous n avez pas de profil Livreur"}
-        });
+          this.router.navigate(['overview'], { queryParams: { begin: true } });
+        }
+        else {this.error = "Vous n'avez pas de profil Livreur"}
+        // });
   }
 
   onLogout() {
-    this.authenticate.logout();
+    this.auth.logout();
   }
 
 }

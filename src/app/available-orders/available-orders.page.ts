@@ -23,14 +23,15 @@ export class AvailableOrdersPage implements OnInit {
   orders: any[] = [];
   order: Order;
   orderCurrentId: number;
-  awaitingDelivery: number;
+  awaitingDelivery: any;
   error: string;
   headers: any;
   fastEatConst = fasteatconst;
   statusDeliverer: boolean=false;
 
-  // userNameNoLimit = 'fasteat74@gmail.com';
-  userNameNoLimit = 'test@gmail.com';
+  userNameNoLimit = 'fasteat74@gmail.com';
+  // userNameNoLimit = 'test@gmail.com';
+
   nbDeliveryMax = 1;
 
   secondes: number;
@@ -47,18 +48,29 @@ export class AvailableOrdersPage implements OnInit {
   fastOff = environment.fastOff;
   fastOn = environment.fastOnline;
 
+/**
+ * @description userName recuperé dans le localstorage "stocké a la connexion"
+ */
+    public get userName () {
+    // console.log("userName",localStorage.getItem('username'));
+    return localStorage.getItem('username') ?? "";
+  }
+
+  public sector: string;
+  public idSector: string;
+
   // tslint:disable-next-line:max-line-length
   // public orders: Array<{ restaurant: string; order: number ; dateTake: string; preparingTime: string, delivery_cost: number, tip: number, fastItBonus: number}> = [];//
   constructor(private router: Router,
-              public alertController: AlertController,
+              private alertController: AlertController,
               private authenticate: AuthenticationService,
               private deliveryService: DeliveryService,
-              private activatedRoute: ActivatedRoute) {
+              private activatedRoute: ActivatedRoute ) {
                 console.log('status deliverer controller', this.statusDeliverer);  }
 
   doRefresh(event) {
     console.log('Begin async operation');
-    this.getOrderAvaible();
+    this.getOrderAvailable();
     setTimeout(() => {
       console.log('Async operation has ended');
       event.target.complete();
@@ -71,12 +83,15 @@ export class AvailableOrdersPage implements OnInit {
     const source = timer(4000, 7000);
     this.statusDeliverer = localStorage.getItem("statusDeliverer") == "true";
     console.log('status deliverer ngOninit', this.statusDeliverer);
+    this.sector = this.activatedRoute.snapshot.paramMap.get('sector');
+    this.idSector = this.activatedRoute.snapshot.paramMap.get('id');
     
-    this.getOrderAvaible();
+    this.getOrderAvailable();
   }
 
-  getOrderAvaible() {
-    this.deliveryService.getOrderAvailabe().subscribe((response) => {
+  getOrderAvailable() {
+    const user = {user : this.userName, idSector: this.idSector};
+    this.deliveryService.getOrderAvailable(user).subscribe((response) => {
       console.log(response);
       this.orders = response.orders;
       this.orders.forEach( order => {
@@ -122,11 +137,13 @@ export class AvailableOrdersPage implements OnInit {
         console.log('deliverer', deliverer);
 
         this.awaitingDelivery = deliverer?.orders?.filter(order => order?.date_delivered == null);
+        
         console.log('awaitingdeliverer', this.awaitingDelivery);
+        console.log('this.awaitingDelivery + 1 ', this.awaitingDelivery + 1 );
 
         // TODO: 10.01.2021 Ajouter 2 constantes ( Mail livreur admin && Nb de courses possible 06/02/2021 en bdd)
         const canAffectDeliverer = deliverer?.email?.toLowerCase() === this.userNameNoLimit.toLowerCase() ||
-            this.awaitingDelivery + 1 <= this.nbDeliveryMax;
+        this.awaitingDelivery == null || this.awaitingDelivery?.length + 1 <= this.nbDeliveryMax;
 
         // Avant d'affecter une livraison à un livreur on
         // regarde si il a atteint son nombre maximum de livraison
@@ -184,7 +201,8 @@ export class AvailableOrdersPage implements OnInit {
       }
     };
     this.deliveryService.saveOrderDeliverer(orderSave).subscribe( orderSaved => {
-      this.router.navigate([`/detail-delivery/${orderId}`]);
+      // this.router.navigate([`/detail-delivery/${orderId}`]);
+      this.router.navigate([`/pending-orders/`]);
     });
   }
 

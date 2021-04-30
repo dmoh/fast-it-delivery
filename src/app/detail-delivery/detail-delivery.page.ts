@@ -19,7 +19,14 @@ export class DetailDeliveryPage implements OnInit {
   isValid: boolean;
   orderId: string;
   order: Order;
-  isDelivering: boolean;
+  
+  _isDelivering: boolean;
+  set isDelivering(order: any) {
+      this._isDelivering = order?.status >= 3 && order?.date_delivered == null ;
+  }
+  get isDelivering() {
+      return this._isDelivering;
+  }
 
   constructor(private fb: FormBuilder,
               public alertController: AlertController,
@@ -38,7 +45,6 @@ export class DetailDeliveryPage implements OnInit {
     this.order = new Order();
     this.order.business = new Restaurant();
     this.order.customer = new User();
-
   }
 
   ngOnInit() {
@@ -57,10 +63,11 @@ export class DetailDeliveryPage implements OnInit {
               }
               // let order: Order = new Order();
               this.order = orderById;
-              alert(this.order);
+              // alert(this.order);
               console.log(this.order);
 
-              this.isDelivering = this.order.status >= 3 && this.order.date_delivered == null;
+              // this.isDelivering = this.order.status >= 3 && this.order.date_delivered == null;
+              this.isDelivering = this.order;
 
               this.hasDeliveryCode = this.order.deliverCode != null;
 
@@ -114,16 +121,16 @@ export class DetailDeliveryPage implements OnInit {
           message: ' <strong> Avez vous récuperé la commande ? </strong>',
           buttons: [
             {
-              text: 'Non, elle est en cours de préparation',
+              text: 'Non pas encore',
               role: 'cancel',
               cssClass: 'secondary',
               handler: (blah) => {
                 console.log('Confirm Cancel');
               }
             }, {
-              text: 'Oui',
+              text: 'Oui je confirme',
               handler: () => {
-                console.warn('orderId', this.order.id);
+                console.info('orderId', this.order.id);
                 this.saveOrderDeliverer(this.order.id, this.order.deliverer.id, Date.now(), true);
               }
             }
@@ -146,11 +153,11 @@ export class DetailDeliveryPage implements OnInit {
       //   if (result.response) {
         // }
       // });
-      this.saveOrderDeliverer(this.order.id, this.order.deliverer.id, Date.now(), true);
+      // this.saveOrderDeliverer(this.order.id, this.order.deliverer.id, Date.now(), true);
     }
   }
 
-  private finalizeDelivery() {
+  private async finalizeDelivery() {
     let order: any;
     const dateDelivered = '@' + Math.round(Date.now() / 1000) ;
 
@@ -161,9 +168,33 @@ export class DetailDeliveryPage implements OnInit {
         status: 4,
       }
     };
-    this.deliveryService.saveOrderFinal(order).subscribe( res => {
-      this.router.navigate(['pending-orders']);
-    });
+
+    const modalRef = await this.alertController.create({
+      header: 'CONFIRMATION DE LIVRAISON',
+        message: ' <strong> Confirmez-vous avoir livré la commande ? </strong>',
+        buttons: [
+          {
+            text: 'Non pas encore',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: (blah) => {
+              console.log('Confirm Cancel');
+            }
+          }, {
+            text: 'Oui je confirme',
+            handler: () => {
+              console.info('orderId', this.order.id);
+              this.deliveryService.saveOrderFinal(order).subscribe( res => {
+                this.router.navigate(['pending-orders']);
+              });
+            }
+          }
+        ]
+      });
+  
+      await modalRef.present();
+      const result = await modalRef.onDidDismiss();
+      console.log(result);
   }
 
   private saveOrderDeliverer(orderId, delivererId, dateDelivery, refresh) {
@@ -185,6 +216,7 @@ export class DetailDeliveryPage implements OnInit {
         next => {
           if (refresh) {
             console.warn('success', next);
+            this.isDelivering = orderSave;
             // window.location.reload();
           }
         },
@@ -195,7 +227,7 @@ export class DetailDeliveryPage implements OnInit {
   }
 
   onSubmit() {
-    this.router.navigate(['detail-delivery']);
+    this.router.navigate(['pending-orders']);
   }
 
   onLogout() {

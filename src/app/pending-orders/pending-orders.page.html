@@ -24,15 +24,15 @@
       <ion-item>
         <ion-label>
           <h2><b>Commande en attente de livraison chez:</b></h2>
-          <h4 style="color: blue;text-transform: uppercase; text-align: center; font-size: large"> {{order.business.name}}</h4>
+          <h4 color="primary" style="text-transform: uppercase; text-align: center; font-size: large"> {{order.business.name}}</h4>
         </ion-label>
       </ion-item>
       <ion-item>
-        <h3> Commandé par le client: </h3>
+        <h3> Commandé le: </h3>
         <h4> {{ order.payedAt.date | date: 'dd/MM/yyyy' }} à {{ order.payedAt.date |  date: 'HH:mm' }} </h4>
       </ion-item>
       <ion-item>
-        <h3> Accepté par le livreur: </h3>
+        <h3> Accepté le: </h3>
         <h4> {{ order.date_taken_deliverer.date | date: 'dd/MM/yyyy' }} à {{ order.date_taken_deliverer.date |  date: 'HH:mm' }} </h4>
       </ion-item>
       <ion-item>

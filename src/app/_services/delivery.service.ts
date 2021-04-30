@@ -17,7 +17,7 @@ export class DeliveryService {
     this.headers = new HttpHeaders({
       'Content-Type': 'application/json; charset=utf-8'
     });
-    if (token.token) {
+    if (token?.token) {
       this.headers = new HttpHeaders({
         'Content-Type': 'application/json; charset=utf-8',
         'Authorization': `Bearer ${token.token}`
@@ -57,9 +57,11 @@ export class DeliveryService {
     return this.http.post<any>(`${this.urlApi}/order/save_deliverer`, request, {headers: this.headers});
   }
 
-  getOrderAvailabe(): Observable<any>{
-    return this.http.get<any>( `${this.urlApi}/order/available`, {headers: this.headers});
-
+  getOrderAvailable(request: any): Observable<any>{
+    return this.http.post<any>( `${this.urlApi}/order/available`, request, {headers: this.headers});
   }
 
+  saveInfosDeliverer(request: any[]){
+    return this.http.post<any>(`${this.urlApi}/user/save_deliverer`, request, {headers: this.headers});
+  }
 }

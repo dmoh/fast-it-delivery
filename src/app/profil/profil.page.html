@@ -14,87 +14,139 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="userInfo">
   <ion-grid>
     <ion-row>
       <ion-col>
-        <div class="ion-text-center">
-          <ion-img [src]="imgLogo" alt="logo fast-it"></ion-img>
-        </div>
+        <ion-item lines="none">
+          <h4>Informations détaillées</h4>
+        </ion-item>
       </ion-col>
     </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Nom</ion-label>
+          <ion-input [(ngModel)]="userInfo.lastname"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Prénom</ion-label>
+          <ion-input [(ngModel)]="userInfo.firstname"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
     <ion-row>
       <ion-col>
         <ion-item>
           <ion-label position="floating">Email</ion-label>
-          <ion-input [(ngModel)]="email"></ion-input>
+          <ion-input [(ngModel)]="userInfo.email"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
+
     <ion-row>
       <ion-col>
         <ion-item>
           <ion-label position="floating">Téléphone</ion-label>
-          <ion-input [(ngModel)]="phone"></ion-input>
+          <ion-input [(ngModel)]="userInfo.phone"></ion-input>
         </ion-item>
-      </ion-col>
-    </ion-row>
-    <H2>Adresse de livraison (par défaut)</H2>
-      <ion-row>
-        <ion-col>
-          <ion-item>
-            <ion-label position="floating">Rue</ion-label>
-            <ion-input [(ngModel)]="street" type="street"></ion-input>
-          </ion-item>
-        </ion-col>
-    </ion-row>
-    <ion-row>
-    <ion-col>
-      <ion-item>
-        <ion-label position="floating">Ville</ion-label>
-        <ion-input [(ngModel)]="City" type="City"></ion-input>
-      </ion-item>
-    </ion-col>
-    </ion-row>
-      <ion-row>
-    <ion-col>
-      <ion-item>
-        <ion-label position="floating">Code Postale</ion-label>
-        <ion-input [(ngModel)]="ZipCode" type="Zipcode"></ion-input>
-      </ion-item>
-    </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-text class="ion-color-danger" *ngIf="error && error.length > 3">{{ error }}</ion-text>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-button (click)="onSubmit()" size="large">Sauvegarder</ion-button>
       </ion-col>
     </ion-row>
 
-    <H2>Modification du mot de passe</H2>
     <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Rue</ion-label>
+            <ion-input [(ngModel)]="userInfo.addresses[0].street" type="street"></ion-input>
+          </ion-item>
+        </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Ville</ion-label>
+          <ion-input [(ngModel)]="userInfo.addresses[0].city" type="City"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Code Postale</ion-label>
+          <ion-input [(ngModel)]="userInfo.addresses[0].zipCode" type="Zipcode"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Kbis</ion-label>
+          <ion-input [(ngModel)]="userInfo.siret"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <!-- 
+      <ion-row>
+        <ion-col>
+          <ion-text class="ion-color-danger" color="danger" *ngIf="error && error.length > 3">{{ error }}</ion-text>
+        </ion-col>
+      </ion-row>
+    -->
+
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="onSaveDelivererInfo()" size="block">Sauvegarder</ion-button>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <ion-item lines="none">
+          <h4>Modification du mot de passe</h4>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Mot de passe actuel</ion-label>
+          <ion-input [(ngModel)]="password" type="password"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="password != ''">
       <ion-col>
         <ion-item>
           <ion-label position="floating">Nouveau mot de passe</ion-label>
-          <ion-input [(ngModel)]="password" type="password"></ion-input>
+          <ion-input [(ngModel)]="newPassword" type="password"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
-    <ion-row>
+
+    <ion-row *ngIf="password != ''">
       <ion-col>
         <ion-item>
           <ion-label position="floating">Confirmation du mot de passe</ion-label>
-          <ion-input [(ngModel)]="password" type="password"></ion-input>
+          <ion-input [(ngModel)]="newPassword" type="password"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button (click)="onSubmit()" size="large">Modifier</ion-button>
+        <ion-button (click)="onChangePassword()" size="block">Modifier</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
