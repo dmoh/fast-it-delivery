@@ -156,9 +156,9 @@ export class AvailableOrdersPage implements OnInit {
             this.presentAlert();
           }
         } else {
-          this.orderMaximumAlert();
+            this.orderMaximumAlert();
         }
-        });
+      });
     });
   }
 

@@ -4,9 +4,10 @@ import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { environment } from '@environments/environment';
-import { UserService } from './_services/user.service';
 import { Deliverer } from './_models/deliverer';
 import { Router } from '@angular/router';
+import { DeliveryService } from './_services/delivery.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -30,49 +31,56 @@ export class AppComponent implements OnInit {
   */
   public get userInfo (): Deliverer {
     // console.log("userInfo", <Deliverer> JSON.parse(localStorage.getItem('userInfo')));
-    return <Deliverer> JSON.parse(localStorage.getItem('userInfo')) ?? null;
+    // return <Deliverer> JSON.parse(localStorage.getItem('userInfo')) ?? null;
+    return this.delivererService.currentUser;
   }
 
   fastOn = environment.fastOnline;
   fastOff = environment.fastOff;
-  sectors = new Array<any>();
+  // sectors = new Array<any>();
 
   public get statusDeliverer () {
-    return localStorage.getItem("statusDeliverer") == "true";
+    return this.delivererService.currentUser?.status ?? false
   }
 
-  public appPages = [
-    {
-      title: 'Vue Globale',
-      url: '/overview',
-      icon: 'eye',
-      displayDefault: true,
-      // icon: 'mail'
-    },
-    {
-      title: 'Commandes en cours',
-      url: '/pending-orders',
-      icon: 'bicycle',
-      displayDefault: true,
-      // icon: 'paper-plane'
-    },
-    {
-      title: 'Commandes disponibles',
-      url: '/available-orders',
-      icon: 'flash',
-      // icon: 'notifications-circle'
-    },
-    {
-      title: 'Commandes livrées',
-      url: '/delivered-orders',
-      icon: 'checkmark-done',
-      displayDefault: true,
-      // url: '/sector/delivered-orders',
-      // icon: 'heart'
-    },
-  ];
+  // public appPages: BehaviorSubject<Array<any>> = new BehaviorSubject<Array<any>>( [
+  //   {
+  //     title: 'Vue Globale',
+  //     url: '/overview',
+  //     icon: 'eye',
+  //     displayDefault: true,
+  //     // icon: 'mail'
+  //   },
+  //   {
+  //     title: 'Commandes en cours',
+  //     url: '/pending-orders',
+  //     icon: 'bicycle',
+  //     displayDefault: true,
+  //     // icon: 'paper-plane'
+  //   },
+  //   {
+  //     title: 'Commandes disponibles',
+  //     url: '/available-orders',
+  //     icon: 'flash',
+  //     // icon: 'notifications-circle'
+  //   },
+  //   {
+  //     title: 'Commandes livrées',
+  //     url: '/delivered-orders',
+  //     icon: 'checkmark-done',
+  //     displayDefault: true,
+  //     // url: '/sector/delivered-orders',
+  //     // icon: 'heart'
+  //   },
+  // ]);
 
-  public indexParams = this.appPages.length+1;
+  // public indexParams = this.appPages.length + 1;
+  // public paramIndex = this.appPages.length + 1;
+
+  public get appPages(): Array<any> {
+    return this.delivererService.appPagesSubject.value;
+  }
+
   public params = [{
       title: 'Paramètres du profil',
       url: '/profil',
@@ -85,11 +93,11 @@ export class AppComponent implements OnInit {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private userService: UserService,
+    private delivererService: DeliveryService,
     private router: Router,
   ) {
     this.initializeApp();
-    this.paramIndex = this.appPages.length;
+    this.paramIndex = this.appPages.length + 1;
   }
 
   initializeApp() {
@@ -98,7 +106,6 @@ export class AppComponent implements OnInit {
       this.splashScreen.hide();
     });
   }
-  
 
   ngOnInit() {
     const path = window.location.pathname.split('sector/')[1];
@@ -106,12 +113,16 @@ export class AppComponent implements OnInit {
       this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
     }
 
-    this.userService.getDeliverer("").subscribe( deliverer => {
-      console.log("userInfo Deliverer", <Deliverer> deliverer);
+    // /*
+    this.delivererService.getDeliverer().subscribe( (deliverer: Deliverer) => {
+      console.log("userInfo Deliverer", deliverer);
       console.log("userInfo", JSON.stringify(deliverer));
-      localStorage.setItem("userInfo", JSON.stringify(deliverer));
+      console.log(" getDeliverer().subscribe delivererService.currentUser value:", this.delivererService.currentUser);
 
-      this.appPages = [
+      // localStorage.setItem("userInfo", JSON.stringify(deliverer));
+      // this.delivererService.currentUser = deliverer;
+      let appPageTable;
+      appPageTable = [
         {
           title: 'Vue Globale',
           url: '/overview',
@@ -129,23 +140,26 @@ export class AppComponent implements OnInit {
 
       deliverer?.sectors?.forEach( sector => {
         const urlSector = `/sector/${sector.id}/${(<string>sector.name).trim().replace(' ','')}`;
-        this.appPages.push({
+        appPageTable.push({
           title: `Commandes ${sector.name}`,
           url: urlSector,
           icon: 'flash',
         })
       });
 
-      this.appPages.push(
+      appPageTable.push(
         {
           title: 'Commandes livrées',
           url: '/delivered-orders',
           icon: 'checkmark-done',
           displayDefault: true,
         },
-      )
+      );
 
-      this.indexParams = this.appPages.length+1
+      // this.indexParams = this.appPages.length + 1;
+      // this.appPages.next(appPageTable);
+      this.paramIndex = appPageTable.length + 1;
     });
+    // */
   }
 }

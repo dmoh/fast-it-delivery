@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {DeliveryService} from "@app/_services/delivery.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {UserService} from "@app/_services/user.service";
 import { AuthenticationService } from '@app/_services/authentication.service';
 import { environment } from '@environments/environment';
 import { ActionsService } from '@app/_services/actions.service';
@@ -25,7 +24,7 @@ export class OverviewPage implements OnInit {
   _statusDeliverer :boolean = false;
 
   get userInfo(): Deliverer {
-    return <Deliverer> JSON.parse( localStorage.getItem("userInfo") ) ?? null;
+    return this.delivererService.currentUser ?? null;
   }
 
   get statusDeliverer() {
@@ -52,35 +51,43 @@ export class OverviewPage implements OnInit {
     return listSector;
   }
 
-  constructor(private  deliveryService: DeliveryService, private userService: UserService,
-              private router: Router, private authenticate: AuthenticationService,
-              private activatedRout: ActivatedRoute,
-              private actionsService: ActionsService) { 
-      this.activatedRout.queryParams.subscribe(params => {
-        console.log(params);
-      // if (params != null) {
-      //   params = null;
-      //   this.router.navigate(["overview"]);
-      // };
-    });
+  constructor(
+    private activatedRout: ActivatedRoute,
+    private authenticate: AuthenticationService,
+    private delivererService: DeliveryService,
+    private router: Router,
+    private actionsService: ActionsService) { 
+      //   this.activatedRout.queryParams.subscribe(params => {
+    //     console.log(params);
+    //   // if (params != null) {
+    //   //   params = null;
+    //   //   this.router.navigate(["overview"]);
+    //   // };
+    // });
   }
 
   ngOnInit() {
-    this.statusDeliverer = localStorage.getItem("statusDeliverer") == "true";
+    // this.statusDeliverer = localStorage.getItem("statusDeliverer") == "true";
+    this.statusDeliverer = this.delivererService.currentUser?.status ?? false;
+
     this.rangeDate = {dtstart : new Date().toLocaleDateString(), dtend : new Date().toLocaleDateString()};
 
     if (!this.userInfo) {
-      this.userService.getDeliverer("").subscribe( deliverer => {
-       localStorage.setItem("userInfo", JSON.stringify(deliverer));
+      this.delivererService.getDeliverer().subscribe( deliverer => {
+      //  localStorage.setItem("userInfo", JSON.stringify(deliverer));
+      // console.log("userInfo", this.userInfo);
+      // console.log("deliverer", deliverer);
+      // this.userInfo;
+      this.statusDeliverer = this.userInfo?.status ?? false;
      });
     }
     // setTimeout(() => {
-    const getOrderSub = this.deliveryService.getOrderAnalize(1, this.rangeDate)
+    const getOrderSub = this.delivererService.getOrderAnalize(1, this.rangeDate)
         .subscribe((response) => {
-          console.log(response);
+          console.log("analyze", response);
           this.amountOrderCurrentMonth = ((response.delivery_cost).toFixed(2)).replace('.', ',');
           this.countOrderCurrentMonth = response.count;
-          this.userInfo;
+          // this.userInfo;
           setTimeout(() => {
           }, 0);
         });
@@ -106,22 +113,24 @@ export class OverviewPage implements OnInit {
 
   async onChangeStatus(){
     console.log("onChangeStatus", this.statusDeliverer);
-    this.userService.setDelivererStatus(this.statusDeliverer)
+    this.delivererService.setDelivererStatus(this.statusDeliverer)
         .subscribe(async (response) => {
           if (response.ok) {
             // pr eviter de retoutner sur la vue si status n'as pas changé
-            const deliverer = await this.userService.getDeliverer("").toPromise();
+            const deliverer : Deliverer = await this.delivererService.getDeliverer().toPromise();
             // .then( deliverer => {
-              localStorage.setItem("userInfo", JSON.stringify(deliverer));
+              //  localStorage.setItem("userInfo", JSON.stringify(deliverer));
+               console.log("currentUser", this.delivererService.currentUser, "deliverer" , deliverer);
             // });
 
-            const oldStatus = localStorage.getItem("statusDeliverer") == "true";
-            localStorage.setItem('statusDeliverer', this.statusDeliverer ? "true" : "false");
-            if ( this.statusDeliverer && this.statusDeliverer != oldStatus) {
+            // const oldStatus = localStorage.getItem("statusDeliverer") == "true";
+            // localStorage.setItem('statusDeliverer', this.statusDeliverer ? "true" : "false");
+            // if ( this.statusDeliverer && this.statusDeliverer != oldStatus) {
+            if ( this.statusDeliverer) {
               this.actionsService.presentToastWithOptions("","eye",`Vous êtes en mode ${this.fastOn}`,"top","",null,1000);
               this.goTo('order-avalaible');
             } else {
-              if (this.statusDeliverer != oldStatus){}
+            //   if (this.statusDeliverer != oldStatus){}
                 this.actionsService.presentToastWithOptions("","eye-off-outline",`Vous êtes en mode ${this.fastOff}`,"top","",null,1000);
             }
           }

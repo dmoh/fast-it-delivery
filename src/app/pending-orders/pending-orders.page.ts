@@ -31,17 +31,16 @@ export class PendingOrdersPage implements OnInit {
 
 
   ngOnInit(){
-
     this.deliverer = new Deliverer();
     this.deliverer.orders = [];
 
     this.deliveryService.getCurrentOrders().subscribe((delivererCurrent) => {
-
       console.log(delivererCurrent);
-        // get Orders awaiting delivery
+      // get Orders awaiting delivery
       this.deliverer = delivererCurrent;
-      this.orders = (this.deliverer.orders != null) ? this.deliverer.orders : new Array();
-      
+      this.orders = this.deliverer?.orders ?? new Array();
+      // this.orders = this.orders.sort( (a,b) => b-a);
+      // this.orders = this.orders.filter(x => x == 0);
       console.log("order", this.orders);
     });
   }
@@ -60,6 +59,5 @@ export class PendingOrdersPage implements OnInit {
     console.log('navigationExtras', navigationExtras);
     // @ts-ignore
     this.router.navigate(['detail-delivery'], navigationExtras);
-
   }
 }

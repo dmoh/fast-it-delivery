@@ -14,60 +14,66 @@ import { ActionsService } from './actions.service';
   providedIn: 'root'
 })
 export class AuthenticationService {
-  private currentUserSubject: BehaviorSubject<Deliverer>;
-  public get currentUserValue(): Deliverer {
-    return this.currentUserSubject?.value;
+  private currentTokenSubject: BehaviorSubject<any>;
+  public get currentTokenValue(): any {
+    return this.currentTokenSubject?.value;
   }
+
   public headers: HttpHeaders;
-  public get tokenUserCurrent(): string {
-        // console.warn(JSON.parse(localStorage.getItem('currentUser')));
-        return JSON.parse(localStorage.getItem('currentUser')); // this.currentUserSubject.value.token;
-  }
+
   public urlApi: string = environment.apiUrl;
 
-
   constructor(private http: HttpClient, private router: Router, public actionsService: ActionsService) { 
-    const token = JSON.parse(localStorage.getItem('currentUser'));
-    this.currentUserSubject = new BehaviorSubject<Deliverer>(JSON.parse(localStorage.getItem('currentUser')));
+    this.currentTokenSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem("currentToken")));
 
     this.headers = new HttpHeaders({
         'Content-Type': 'application/json'
     });
-    if (token?.token) {
+
+    console.log("localStorage.getItem(currentToken)", JSON.parse(localStorage.getItem("currentToken")));
+    console.log("currentTokenSubject.value.token", this.currentTokenSubject.value.token);
+    if (this.currentTokenSubject.value?.token) {
       this.headers = new HttpHeaders({
         'Content-Type': 'application/json; charset=utf-8',
-        Authorization: `Bearer ${token.token}`
+        Authorization: `Bearer ${this.currentTokenSubject.value.token}`
       });
     }
   }
 
-  login(email: string, password: string) {
-    const token = JSON.parse(localStorage.getItem('currentUser'));
+  public login(email: string, password: string) {
     this.headers = new HttpHeaders({
       'Content-Type': 'application/json; charset=utf-8'
     });
-    if (token?.token) {
+
+    if (this.currentTokenSubject.value?.token) {
+      console.log("this.currentTokenSubject.value?.token",this.currentTokenSubject.value?.token);
+      alert("currentTokenSubject");
+
       this.headers = new HttpHeaders({
         'Content-Type': 'application/json; charset=utf-8',
-        Authorization: `Bearer ${token.token}`
+        Authorization: `Bearer ${this.currentTokenSubject.value.token}`
       });
     }
 
     const optionRequete = {
       headers: this.headers
     };
+
     console.log("optionRequete", optionRequete);
 
     return this.http.post<any>(`${environment.apiUrl}/authentication_token`, { email, password }, optionRequete)
       .pipe(
         map((user : any) => {
-          // store user details and jwt token in local storage to keep user logged in between page refreshes
-          localStorage.setItem('currentUser', JSON.stringify(user));
-          // this.currentUserSubject.next(user);
+          // Store user details and jwt token in local storage to keep user logged in between page refreshes
+          this.currentTokenSubject.next(user);
+          localStorage.setItem('currentToken',JSON.stringify(user) );
+
           const jwtDecode: any = jwt_decode(user.token);
           console.log("jwtDecode", jwtDecode);
-            
+          
+          // localStorage.setItem('currentUser', JSON.stringify(user));
           if (jwtDecode.username) {
+            // USER Account
             localStorage.setItem('username', jwtDecode.username);
           }
 
@@ -89,22 +95,22 @@ export class AuthenticationService {
         }),
         catchError(x => {
           console.log(x);
-          this.actionsService.presentToastWithOptions("", 'alert-circle-outline', x.message, "top","",null,2000);
+          this.actionsService.presentToastWithOptions("", 'alert-circle-outlinef', x.message, "top","",null,2000);
           return null;
         })
       );
   }
 
-  setDelivererStatus(status: boolean): Observable<any> {
-    
-    const token = JSON.parse(localStorage.getItem('currentUser'));
+  public setDelivererStatus(status: boolean): Observable<any> {
+    // const token = JSON.parse(localStorage.getItem('currentUser'));
     this.headers = new HttpHeaders({
       'Content-Type': 'application/json; charset=utf-8'
     });
-    if (token?.token) {
+
+    if (this.currentTokenValue?.token) {
       this.headers = new HttpHeaders({
         'Content-Type': 'application/json; charset=utf-8',
-        Authorization: `Bearer ${token.token}`
+        Authorization: `Bearer ${this.currentTokenValue.token}`
       });
     }
 
@@ -114,23 +120,23 @@ export class AuthenticationService {
     return this.http.post<any>(`${this.urlApi}/deliverer/updateStatus/save`,{ statusDeliverer: status}, optionRequete);
   }
 
-  logout() {
+  public logout() {
     const logOutAction = this.setDelivererStatus(false).pipe(
       map( x => this.logOutAction(x) ),
       catchError( err => this.actionsService.presentToastWithOptions(
         "","alert-circle-outline",
         err.message,"top","",null,2000) )
-      );
+    );
 
     this.actionsService.presentAlertConfirm(
                           '<strong>Etes-vous sur de vouloir vous déconnecter ?</strong>',
                           logOutAction
-                        );
+    );
   }
 
   private logOutAction (action: any) {
       localStorage.clear();
-      this.currentUserSubject.next(null);
+      this.currentTokenSubject.next(null);
       this.actionsService.presentToastWithOptions("","log-out-outline","Vous avez été déconnecté","top", "", null, 2000);
       this.router.navigate(['login']);
   }
