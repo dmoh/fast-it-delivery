@@ -30,8 +30,10 @@ export class AuthenticationService {
         'Content-Type': 'application/json'
     });
 
-    console.log("localStorage.getItem(currentToken)", JSON.parse(localStorage.getItem("currentToken")));
-    console.log("currentTokenSubject.value.token", this.currentTokenSubject.value.token);
+    if(localStorage.getItem("currentToken"))
+      console.log("localStorage.getItem(currentToken)", JSON.parse(localStorage.getItem("currentToken")));
+    
+    console.log("currentTokenSubject.value.token", this.currentTokenSubject.value?.token);
     if (this.currentTokenSubject.value?.token) {
       this.headers = new HttpHeaders({
         'Content-Type': 'application/json; charset=utf-8',

@@ -104,6 +104,7 @@ export class AppComponent implements OnInit {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
+      
     });
   }
 
@@ -112,54 +113,5 @@ export class AppComponent implements OnInit {
     if (path !== undefined) {
       this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
     }
-
-    // /*
-    this.delivererService.getDeliverer().subscribe( (deliverer: Deliverer) => {
-      console.log("userInfo Deliverer", deliverer);
-      console.log("userInfo", JSON.stringify(deliverer));
-      console.log(" getDeliverer().subscribe delivererService.currentUser value:", this.delivererService.currentUser);
-
-      // localStorage.setItem("userInfo", JSON.stringify(deliverer));
-      // this.delivererService.currentUser = deliverer;
-      let appPageTable;
-      appPageTable = [
-        {
-          title: 'Vue Globale',
-          url: '/overview',
-          icon: 'eye',
-          displayDefault: true,
-          // icon: 'mail'
-        },
-        {
-          title: 'Commandes en cours',
-          url: '/pending-orders',
-          icon: 'bicycle',
-          displayDefault: true,
-        },
-      ];
-
-      deliverer?.sectors?.forEach( sector => {
-        const urlSector = `/sector/${sector.id}/${(<string>sector.name).trim().replace(' ','')}`;
-        appPageTable.push({
-          title: `Commandes ${sector.name}`,
-          url: urlSector,
-          icon: 'flash',
-        })
-      });
-
-      appPageTable.push(
-        {
-          title: 'Commandes livrées',
-          url: '/delivered-orders',
-          icon: 'checkmark-done',
-          displayDefault: true,
-        },
-      );
-
-      // this.indexParams = this.appPages.length + 1;
-      // this.appPages.next(appPageTable);
-      this.paramIndex = appPageTable.length + 1;
-    });
-    // */
   }
 }
