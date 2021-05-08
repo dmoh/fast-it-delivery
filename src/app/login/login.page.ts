@@ -12,6 +12,7 @@ export class LoginPage implements OnInit {
   email: string;
   password: string;
   error: string;
+  hide: boolean = true;
   constructor(
    private auth: AuthenticationService,
    private router: Router,
@@ -26,9 +27,12 @@ export class LoginPage implements OnInit {
         // .subscribe((res) => {
         if (res === true) {
           // console.warn('test', res);
-          this.router.navigate(['overview'], { queryParams: { begin: true } });
+          // this.router.navigate(['overview'], { queryParams: { begin: true } });
+          this.router.navigate(['overview']);
         }
-        else {this.error = "Vous n'avez pas de profil Livreur"}
+        else {
+          this.error = "Vous n'avez pas de profil Livreur"
+        }
         // });
   }
 

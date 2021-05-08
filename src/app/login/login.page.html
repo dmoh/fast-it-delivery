@@ -22,6 +22,7 @@
         <ion-item>
           <ion-label position="floating">Email</ion-label>
           <ion-input [(ngModel)]="email"></ion-input>
+          <ion-icon color="primary" slot="end" name="happy-outline"></ion-icon>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -29,7 +30,9 @@
       <ion-col>
         <ion-item>
           <ion-label position="floating">Mot de passe</ion-label>
-          <ion-input [(ngModel)]="password" type="password"></ion-input>
+          <ion-input [(ngModel)]="password" [type]="hide ? 'password' : 'text'"></ion-input>
+          <ion-icon color="primary" slot="end" 
+          [name]="hide ? 'eye' : 'eye-off-outline'" (click)="hide = !hide"></ion-icon>
         </ion-item>
       </ion-col>
     </ion-row>

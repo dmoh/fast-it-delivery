@@ -49,7 +49,7 @@ export class AuthenticationService {
 
     if (this.currentTokenSubject.value?.token) {
       console.log("this.currentTokenSubject.value?.token",this.currentTokenSubject.value?.token);
-      alert("currentTokenSubject");
+      // alert("currentTokenSubject");
 
       this.headers = new HttpHeaders({
         'Content-Type': 'application/json; charset=utf-8',
@@ -63,9 +63,11 @@ export class AuthenticationService {
 
     console.log("optionRequete", optionRequete);
 
-    return this.http.post<any>(`${environment.apiUrl}/authentication_token`, { email, password }, optionRequete)
+    // return this.http.post<any>(`${environment.apiUrl}/authentication_token`, { email, password }, optionRequete)
+    return this.http.post<any>(`${environment.apiUrl}/api/login_check`, { email, password }, optionRequete)
       .pipe(
         map((user : any) => {
+          console.log("user",user);
           // Store user details and jwt token in local storage to keep user logged in between page refreshes
           this.currentTokenSubject.next(user);
           localStorage.setItem('currentToken',JSON.stringify(user) );

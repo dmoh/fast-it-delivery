@@ -19,7 +19,8 @@ export class AppComponent implements OnInit {
   public paramIndex = 0;
 
   /**
-   * @description userName recuperé dans le localstorage "stocké a la connexion/authentication_token"
+   * @description userName recuperé dans le localstorage 
+   * "stocké a la connexion/authentication_token x= connexion/api/login_check"
    */
   public get userName () {
     // console.log("userName",localStorage.getItem('username'));

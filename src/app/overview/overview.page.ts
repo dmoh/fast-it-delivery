@@ -116,6 +116,7 @@ export class OverviewPage implements OnInit {
     this.delivererService.setDelivererStatus(this.statusDeliverer)
         .subscribe(async (response) => {
           if (response.ok) {
+            this.delivererService.currentUser.status = this.statusDeliverer;
             // pr eviter de retoutner sur la vue si status n'as pas changé
             const deliverer : Deliverer = await this.delivererService.getDeliverer().toPromise();
             // .then( deliverer => {
