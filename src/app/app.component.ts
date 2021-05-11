@@ -8,6 +8,7 @@ import { Deliverer } from './_models/deliverer';
 import { Router } from '@angular/router';
 import { DeliveryService } from './_services/delivery.service';
 import { BehaviorSubject } from 'rxjs';
+import { FirebaseX } from '@ionic-native/firebase-x/ngx';
 
 @Component({
   selector: 'app-root',
@@ -95,9 +96,12 @@ export class AppComponent implements OnInit {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private delivererService: DeliveryService,
+    private firebase: FirebaseX,
     private router: Router,
   ) {
     this.initializeApp();
+    this.firebase.getToken().then(token => console.log(`The token is ${token}`))
+    this.firebase.onMessageReceived().subscribe(data => console.log(`FCM message: ${data}`));
     this.paramIndex = this.appPages.length + 1;
   }
 

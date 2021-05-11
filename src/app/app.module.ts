@@ -11,6 +11,7 @@ import { AppRoutingModule } from './app-routing.module';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule, HTTP_INTERCEPTORS} from "@angular/common/http";
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
+import { FirebaseX } from '@ionic-native/firebase-x/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -27,6 +28,7 @@ import { JwtInterceptor } from './_helpers/jwt.interceptor';
   providers: [
     StatusBar,
     SplashScreen,
+    FirebaseX,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
   ],
