@@ -100,9 +100,6 @@ export class AppComponent implements OnInit {
     private router: Router,
   ) {
     this.initializeApp();
-    this.firebase.getToken().then(token => console.log(`The token is ${token}`))
-    this.firebase.onMessageReceived().subscribe(data => console.log(`FCM message: ${data}`));
-    this.paramIndex = this.appPages.length + 1;
   }
 
   initializeApp() {
@@ -110,6 +107,39 @@ export class AppComponent implements OnInit {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
       
+      this.firebase.getId().then( id => console.log('id', id));
+      this.firebase.getCurrentUser()
+      .then(user => console.log('user', user))
+      .catch(err => console.log('getcurruser',err));
+      
+      alert("init");
+      this.firebase.getToken()
+      .then(token => console.log(`The token is ${token} tikn`, token))
+      .catch(err => console.log("err", err));
+      
+      this.firebase.onMessageReceived().subscribe(
+        data => console.log(`FCM message: ${data}`),
+        err => console.log("msg", err) 
+      );
+        
+      this.firebase.onTokenRefresh().subscribe(
+        data => console.log(`FCM token rfresh: ${data}`),
+        error => console.log("error", error)
+      );
+          
+      this.firebase.hasPermission()
+      .then(perm => console.log(`hasPermission is ${perm}`))
+      .catch(err => console.log("err hasPermission", err));
+
+      this.firebase.listChannels()
+      .then(listChannels => console.log(`listChannels is ${listChannels}`))
+      .catch(err => console.log("err listChannels", err));
+
+      this.firebase.getInfo()
+      .then(getInfo => console.log(`getInfo is ${getInfo}`))
+      .catch(err => console.log("err getInfo", err));
+
+      this.paramIndex = this.appPages.length + 1; 
     });
   }
 
