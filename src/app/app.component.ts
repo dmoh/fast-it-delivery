@@ -110,33 +110,45 @@ export class AppComponent implements OnInit {
       this.firebase.getId().then( id => console.log('id', id));
       this.firebase.getCurrentUser()
       .then(user => console.log('user', user))
-      .catch(err => console.log('getcurruser',err));
+      .catch(err => console.log('getcurruser', err));
       
       alert("init");
       this.firebase.getToken()
-      .then(token => console.log(`The token is ${token} tikn`, token))
-      .catch(err => console.log("err", err));
+      .then(token => console.log(`The token is`, token))
+      .catch(err => console.log("err token", err));
       
+      if (this.platform.is('ios')) {
+        this.firebase.grantPermission().then(hasPermission => console.log(hasPermission ? 'granted' : 'denied'));
+    
+        this.firebase.onApnsTokenReceived().subscribe(token => console.log('PUSH_TOKEN: IOS_TOKEN: ' , token));
+      }
+
       this.firebase.onMessageReceived().subscribe(
-        data => console.log(`FCM message: ${data}`),
+        data => {
+          alert("notif ok msg");
+          console.log(`FCM message: ${data}`);
+        },
         err => console.log("msg", err) 
       );
         
       this.firebase.onTokenRefresh().subscribe(
-        data => console.log(`FCM token rfresh: ${data}`),
+        data => console.log(`FCM token refresh: ${data}`),
         error => console.log("error", error)
       );
-          
-      this.firebase.hasPermission()
-      .then(perm => console.log(`hasPermission is ${perm}`))
-      .catch(err => console.log("err hasPermission", err));
 
       this.firebase.listChannels()
-      .then(listChannels => console.log(`listChannels is ${listChannels}`))
+      .then(channels => {
+        console.log(`listChannels is`, channels);
+        (<Array<any>> channels)?.forEach( channel => {
+          console.log("ID: " + channel.id + ", Name: " + channel.name);
+        });
+      })
       .catch(err => console.log("err listChannels", err));
 
       this.firebase.getInfo()
-      .then(getInfo => console.log(`getInfo is ${getInfo}`))
+      .then(info => {
+        console.log("getInfo", info);
+      })
       .catch(err => console.log("err getInfo", err));
 
       this.paramIndex = this.appPages.length + 1; 
