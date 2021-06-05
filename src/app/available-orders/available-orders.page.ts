@@ -28,6 +28,7 @@ export class AvailableOrdersPage implements OnInit {
   headers: any;
   fastEatConst = fasteatconst;
   statusDeliverer: boolean=false;
+  static timerGetOrder = 4000;
 
   userNameNoLimit = 'fasteat74@gmail.com';
   // userNameNoLimit = 'test@gmail.com';
@@ -91,13 +92,23 @@ export class AvailableOrdersPage implements OnInit {
 
   getOrderAvailable() {
     const user = {user : this.userName, idSector: this.idSector};
-    this.deliveryService.getOrderAvailable(user).subscribe((response) => {
-      console.log(response);
-      this.orders = response.orders;
-      this.orders.forEach( order => {
-        order.amount /=  100;
-      });
-      console.log(this.orders);
+
+    //emit 0 after 1 second then complete, since no second argument is supplied
+    const sourceSocket: Observable<number> = timer(AvailableOrdersPage.timerGetOrder);
+
+    sourceSocket.subscribe(val => {
+      console.log("timer", val);
+      this.deliveryService.getOrderAvailable(user).subscribe(
+        response => {
+          console.log(response);
+          this.orders = response.orders;
+          this.orders.forEach( order => {
+            order.amount /=  100;
+          });
+          console.log(this.orders);
+        },
+        error => console.log("getOrderAvailable", error)
+        );
     });
   }
 

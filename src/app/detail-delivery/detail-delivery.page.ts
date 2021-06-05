@@ -157,7 +157,7 @@ export class DetailDeliveryPage implements OnInit {
     }
   }
 
-  private async finalizeDelivery() {
+  public async finalizeDelivery() {
     let order: any;
     const dateDelivered = '@' + Math.round(Date.now() / 1000) ;
 

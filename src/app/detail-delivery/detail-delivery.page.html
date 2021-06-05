@@ -43,7 +43,7 @@
           <ion-item lines="none" *ngIf="order.customer.addresses"><b>Adresse:</b> {{order.customer.addresses[0].street}}</ion-item>
           <ion-item lines="none" *ngIf="order.customer.addresses"><b>Ville:</b> {{order.customer.addresses[0].city}}</ion-item>
           <ion-item lines="none" *ngIf="order.customer.addresses"><b>Code postal:</b> {{order.customer.addresses[0].zipCode}}</ion-item>
-          <ion-item lines="none" *ngIf="order.comment"><b>Commentaire:</b> {{order.customer.addresses[0].comment}}</ion-item>
+          <ion-item lines="none" *ngIf="order.customer.addresses[0].comment"><b>Commentaire:</b> {{order.customer.addresses[0].comment}}</ion-item>
           <ion-item lines="none" *ngIf="order.customer.phone"><b>Téléphone:</b> <a style="text-decoration: none" href="tel:{{order.customer.phone}}">{{order.customer.phone}}</a></ion-item>
           <ion-item lines="none">
             <h5>Navigation</h5>

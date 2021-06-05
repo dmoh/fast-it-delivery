@@ -112,9 +112,12 @@ export class AppComponent implements OnInit {
       .then(user => console.log('user', user))
       .catch(err => console.log('getcurruser', err));
       
-      alert("init");
+      // alert("init");
       this.firebase.getToken()
-      .then(token => console.log(`The token is`, token))
+      .then( token => {
+        console.log(`The token is`, token);
+        console.log(`The token type`, typeof(token));
+      })
       .catch(err => console.log("err token", err));
       
       if (this.platform.is('ios')) {
