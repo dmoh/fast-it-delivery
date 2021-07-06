@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { DeliveryService } from './_services/delivery.service';
 import { BehaviorSubject } from 'rxjs';
 import { FirebaseX } from '@ionic-native/firebase-x/ngx';
+import { ActionsService } from './_services/actions.service';
 
 @Component({
   selector: 'app-root',
@@ -97,6 +98,7 @@ export class AppComponent implements OnInit {
     private statusBar: StatusBar,
     private delivererService: DeliveryService,
     private firebase: FirebaseX,
+    private actionsService: ActionsService,
     private router: Router,
   ) {
     this.initializeApp();
@@ -128,8 +130,8 @@ export class AppComponent implements OnInit {
 
       this.firebase.onMessageReceived().subscribe(
         data => {
-          alert("notif ok msg");
-          console.log(`FCM message: ${data}`);
+          this.actionsService.presentToast("Reception d'une notification");
+          console.log(`FCM message:`, data);
         },
         err => console.log("msg", err) 
       );
