@@ -26,7 +26,7 @@ export class LoginPage implements OnInit {
     this.firebase.onTokenRefresh().subscribe(
       data => {
         console.log(`FCM token refresh: ${data}`);
-        alert(data);
+        // alert(data);
       },
       error => console.log("error", error)
     );
