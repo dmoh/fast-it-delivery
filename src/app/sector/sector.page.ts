@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Deliverer } from '@app/_models/deliverer';
 import { Order } from '@app/_models/order';
@@ -7,7 +7,7 @@ import { DeliveryService } from '@app/_services/delivery.service';
 import { environment } from '@environments/environment';
 import { AlertController } from '@ionic/angular';
 import * as fasteatconst from '@app/_util/fasteat-constants';
-import { timer } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
 import { ActionsService } from '@app/_services/actions.service';
 
 @Component({
@@ -15,7 +15,7 @@ import { ActionsService } from '@app/_services/actions.service';
   templateUrl: './sector.page.html',
   styleUrls: ['./sector.page.scss'],
 })
-export class SectorPage implements OnInit {
+export class SectorPage implements OnInit, OnDestroy {
   public sector: string;
   public idSector: string;
   uploadResponse = { status: '', message: '', filePath: '' };
@@ -29,6 +29,9 @@ export class SectorPage implements OnInit {
   headers: any;
   fastEatConst = fasteatconst;
   statusDeliverer: boolean=false;
+
+  timerSubscription: Subscription;
+  second: number;
 
   userNameNoLimit = 'fasteat74@gmail.com';
   // userNameNoLimit = 'test@gmail.com';
@@ -62,7 +65,7 @@ export class SectorPage implements OnInit {
   constructor(private router: Router,
               private alertController: AlertController,
               private authenticate: AuthenticationService,
-              private deliveryService: DeliveryService,
+              private delivererService: DeliveryService,
               private actionsService: ActionsService,
               private activatedRoute: ActivatedRoute ) {
                 console.log('status deliverer controller', this.statusDeliverer);  
@@ -74,9 +77,18 @@ export class SectorPage implements OnInit {
     this.deliverer = new Deliverer();
     this.deliverer.orders = [];
     // const source = timer(4000, 7000);
-    this.statusDeliverer = localStorage.getItem("statusDeliverer") == "true";
+    this.statusDeliverer = this.delivererService.currentUser?.status;
     console.log('status deliverer ngOninit', this.statusDeliverer);
     this.getOrderAvailable();
+
+    const source = timer(4000, 7000);
+    this.timerSubscription = source.subscribe(val => {
+      this.second = val;
+      this.getOrderAvailable(false);
+    });
+    setTimeout(() => {
+      this.timerSubscription.unsubscribe();
+    }, 1000000);
   }
 
   doRefresh(event) {
@@ -88,15 +100,16 @@ export class SectorPage implements OnInit {
     }, 2000);
   }
 
-  getOrderAvailable() {
+  getOrderAvailable(displayToast = true) {
     const user = {user : this.userName, idSector: this.idSector};
-    this.deliveryService.getOrderAvailable(user).subscribe((response) => {
-      // console.log(response);
+    this.delivererService.getOrderAvailable(user).subscribe((response) => {
       this.orders = response?.orders;
       this.orders?.forEach( order => {
         order.amount /=  100;
       });
-      this.actionsService.presentToastWithOptions("","arrow-up-outline", `${this.orders?.length} commandes disponibles`, "bottom");
+      if (displayToast) {
+        this.actionsService.presentToastWithOptions("","arrow-up-outline", `${this.orders?.length} commande(s) disponible(s)`, "bottom");
+      }
       console.log(this.orders);
     });
   }
@@ -130,10 +143,10 @@ export class SectorPage implements OnInit {
 
   // Affecter un livreur  à une commande
   private doAffectDeliverer(orderId: number) {
-    this.deliveryService.getOrderById(orderId).subscribe( currentOrder => {
+    this.delivererService.getOrderById(orderId).subscribe( currentOrder => {
       this.order = currentOrder;
       // console.log("currentOrder", currentOrder);
-      this.deliveryService.getDeliverer().subscribe( (deliverer) => {
+      this.delivererService.getDeliverer().subscribe( (deliverer) => {
         console.log('deliverer', deliverer);
 
         this.awaitingDelivery = deliverer?.orders?.filter(order => order?.date_delivered == null);
@@ -200,7 +213,7 @@ export class SectorPage implements OnInit {
         // status: 3,
       }
     };
-    this.deliveryService.saveOrderDeliverer(orderSave).subscribe( orderSaved => {
+    this.delivererService.saveOrderDeliverer(orderSave).subscribe( orderSaved => {
       // this.router.navigate([`/detail-delivery/${orderId}`]);
       this.router.navigate([`/pending-orders/`]);
     });
@@ -212,6 +225,10 @@ export class SectorPage implements OnInit {
 
   onSubmit() {
     this.router.navigate(['pending-orders']);
+  }
+
+  ngOnDestroy() {
+    this.timerSubscription.unsubscribe();
   }
 
 }

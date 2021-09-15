@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {AuthenticationService} from '@app/_services/authentication.service';
 import {Router} from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { FirebaseX } from '@ionic-native/firebase-x/ngx';
 
 @Component({
   selector: 'app-login',
@@ -15,11 +16,20 @@ export class LoginPage implements OnInit {
   hide: boolean = true;
   constructor(
    private auth: AuthenticationService,
+   private firebase: FirebaseX,
    private router: Router,
    ) { }
    // imgLogo: string = "https://fast-it.fr/assets/logo_fastit.jpg";
   imgLogo: string = "/assets/fast_it.png";
   ngOnInit() {
+
+    this.firebase.onTokenRefresh().subscribe(
+      data => {
+        console.log(`FCM token refresh: ${data}`);
+        alert(data);
+      },
+      error => console.log("error", error)
+    );
   }
 
   async onSubmit() {

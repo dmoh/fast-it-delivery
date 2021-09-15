@@ -101,11 +101,14 @@ export class AppComponent implements OnInit {
     private actionsService: ActionsService,
     private router: Router,
   ) {
-    this.initializeApp();
   }
 
   initializeApp() {
-    this.platform.ready().then(() => {
+    this.platform.ready().then( async () => {
+
+      this.paramIndex = this.appPages.length + 2;
+      console.log("initializeApp paramIndex", this.paramIndex);
+
       this.statusBar.styleDefault();
       this.splashScreen.hide();
       
@@ -122,12 +125,15 @@ export class AppComponent implements OnInit {
       })
       .catch(err => console.log("err token", err));
       
+      const token = await this.firebase.getToken();
+      console.log(`The token async is`, token);
+      
       if (this.platform.is('ios')) {
         this.firebase.grantPermission().then(hasPermission => console.log(hasPermission ? 'granted' : 'denied'));
     
         this.firebase.onApnsTokenReceived().subscribe(token => console.log('PUSH_TOKEN: IOS_TOKEN: ' , token));
       }
-
+      
       this.firebase.onMessageReceived().subscribe(
         data => {
           this.actionsService.presentToast("Reception d'une notification");
@@ -156,7 +162,7 @@ export class AppComponent implements OnInit {
       })
       .catch(err => console.log("err getInfo", err));
 
-      this.paramIndex = this.appPages.length + 1; 
+
     });
   }
 
@@ -165,5 +171,8 @@ export class AppComponent implements OnInit {
     if (path !== undefined) {
       this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
     }
+    console.log("ngOnInit paramIndex", this.paramIndex);
+
+    this.initializeApp();
   }
 }

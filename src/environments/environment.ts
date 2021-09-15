@@ -3,8 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 export const environment = {
   production: false,
-  apiUrl: 'https://3d5352186587.ngrok.io',
-  stripeKey: 'pk_test_51Hld3DHA30KRASujz9pTvBU46o5CtubHCOX6t0S8UPkx66sPq2A1cBOKjCnqs9BwEtNinYbXwzj6eY3LG4QiTYKS00DQXCEJc3',
+  apiUrl: 'https://ab21-2a01-e0a-298-5860-a5d5-5c0f-725f-782c.ngrok.io',
   fastOff: 'Fast-Off',
   fastOnline: 'Fast-Online',
   queryStarted: 'begin',

@@ -41,16 +41,9 @@
   </ion-toolbar>
 </ion-header>
 
-<!-- <ion-content *ngIf="statusDeliverer">
-  <div>
-    Vous êtes en {{ fastOff }};
-  </div>
-</ion-content> -->
-
 <!-- Custom Refresher Properties -->
 
 <!-- Custom Refresher Content -->
-
 <ion-content *ngIf="statusDeliverer" [fullscreen]="true">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content
@@ -60,6 +53,9 @@
             refreshingText="Synchronisation en cours...">
     </ion-refresher-content>
   </ion-refresher>
+  <ion-content class="ion-margin-top ion-margin-bottom ion-text-center" *ngIf="(orders?.length == 0)" [fullscreen]="true">
+    <h3> 0 commande disponible</h3> 
+  </ion-content>
   <ion-list>
     <ion-item-group *ngFor="let order of orders">
       <ion-item>
@@ -99,5 +95,6 @@
       </ion-item>
     </ion-item-group>
   </ion-list>
+
 </ion-content>
 
