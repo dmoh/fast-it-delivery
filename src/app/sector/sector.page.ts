@@ -38,8 +38,6 @@ export class SectorPage implements OnInit, OnDestroy {
 
   nbDeliveryMax = 1;
 
-  secondes: number;
-
   lastUpdate = new Promise((resolve, reject) => {
     const date = new Date();
     setTimeout(
@@ -214,7 +212,6 @@ export class SectorPage implements OnInit, OnDestroy {
       }
     };
     this.delivererService.saveOrderDeliverer(orderSave).subscribe( orderSaved => {
-      // this.router.navigate([`/detail-delivery/${orderId}`]);
       this.router.navigate([`/pending-orders/`]);
     });
   }

@@ -212,7 +212,6 @@ export class AvailableOrdersPage implements OnInit {
       }
     };
     this.deliveryService.saveOrderDeliverer(orderSave).subscribe( orderSaved => {
-      // this.router.navigate([`/detail-delivery/${orderId}`]);
       this.router.navigate([`/pending-orders/`]);
     });
   }

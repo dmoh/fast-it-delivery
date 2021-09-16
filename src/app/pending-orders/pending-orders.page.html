@@ -13,8 +13,11 @@
   </ion-toolbar>
 </ion-header>
 
-
 <ion-content>
+  <ion-content class="ion-margin-top ion-margin-bottom ion-text-center" *ngIf="(orders?.length == 0)" [fullscreen]="true">
+    <h3> 0 commande en cours de livraison</h3> 
+  </ion-content>
+
   <ion-list>
     <ion-item-group *ngFor="let order of orders">
 

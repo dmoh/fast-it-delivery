@@ -32,7 +32,7 @@ const routes: Routes = [
     loadChildren: () => import('./pending-orders/pending-orders.module').then( m => m.PendingOrdersPageModule)
   },
   {
-    path: 'detail-delivery',
+    path: 'detail-delivery/:id',
     loadChildren: () => import('./detail-delivery/detail-delivery.module').then( m => m.DetailDeliveryPageModule)
   },
   {

@@ -6,6 +6,7 @@ import {DeliveryService} from '@app/_services/delivery.service';
 import {Restaurant} from '@app/_models/restaurant';
 import {Order} from '@app/_models/order';
 import {Deliverer} from '@app/_models/deliverer';
+import { Subscription, timer } from 'rxjs';
 
 @Component({
   selector: 'app-pending-orders',
@@ -21,9 +22,9 @@ export class PendingOrdersPage implements OnInit {
   order: Order;
   orderId: string;
   error: string;
-  
-  userNameNoLimit = 'fasteat74@gmail.com';
-  nbDeliveryMax = 1;
+
+  timerSubscription: Subscription;
+  second: number;
 
   // tslint:disable-next-line:max-line-length
   constructor(private http: HttpClient, private authenticate: AuthenticationService, private deliveryService: DeliveryService, private router: Router) {
@@ -43,6 +44,20 @@ export class PendingOrdersPage implements OnInit {
       // this.orders = this.orders.filter(x => x == 0);
       console.log("order", this.orders);
     });
+
+    const source = timer(4000, 7000);
+    this.timerSubscription = source.subscribe(val => {
+      this.second = val;
+      this.deliveryService.getCurrentOrders().subscribe((delivererCurrent) => {
+        console.log(delivererCurrent);
+        this.deliverer = delivererCurrent;
+        this.orders = this.deliverer?.orders ?? new Array();
+      });
+    });
+    setTimeout(() => {
+      this.timerSubscription.unsubscribe();
+    }, 1000000);
+
   }
 
   onLogout() {
@@ -51,13 +66,14 @@ export class PendingOrdersPage implements OnInit {
 
   onSubmit(orderId: string) {
     console.log('orderId', orderId);
-    let navigationExtras: NavigationExtras = {
-      state: {
-        orderId
-      }
-    };
-    console.log('navigationExtras', navigationExtras);
+    // let navigationExtras: NavigationExtras = {
+    //   state: {
+    //     orderId
+    //   }
+    // };
+    // console.log('navigationExtras', navigationExtras);
     // @ts-ignore
-    this.router.navigate(['detail-delivery'], navigationExtras);
+    // this.router.navigate(['detail-delivery'], navigationExtras);
+    this.router.navigate([`/detail-delivery/${orderId}`]);
   }
 }
