@@ -5,6 +5,8 @@ import { AuthenticationService } from '@app/_services/authentication.service';
 import { environment } from '@environments/environment';
 import { ActionsService } from '@app/_services/actions.service';
 import { Deliverer } from '@app/_models/deliverer';
+import { FirebaseX } from '@ionic-native/firebase-x/ngx';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-overview',
@@ -53,17 +55,46 @@ export class OverviewPage implements OnInit {
 
   constructor(
     private activatedRout: ActivatedRoute,
+    private platform: Platform,
     private authenticate: AuthenticationService,
     private delivererService: DeliveryService,
     private router: Router,
+    private firebase: FirebaseX,
     private actionsService: ActionsService) { 
-      //   this.activatedRout.queryParams.subscribe(params => {
-    //     console.log(params);
-    //   // if (params != null) {
-    //   //   params = null;
-    //   //   this.router.navigate(["overview"]);
-    //   // };
-    // });
+
+  }
+
+  initializeApp() {
+    this.platform.ready().then( async () => {
+
+      const tokenFcm = await this.firebase.getToken();
+      console.log(`The token async is`, tokenFcm);
+      
+      if (this.platform.is('ios')) {
+        this.firebase.grantPermission().then(hasPermission => console.log(hasPermission ? 'granted' : 'denied'));
+        this.firebase.onApnsTokenReceived().subscribe(token => {
+          this.delivererService.setTokenFcm(token, 'ios');
+          console.log('PUSH_TOKEN: IOS_TOKEN: ' , token);
+        });
+      }
+    
+      this.firebase.onTokenRefresh().subscribe(
+        token => {
+          this.delivererService.setTokenFcm(token);
+          console.log(`FCM token refresh: ${token}`);
+        },
+        error => console.log("error", error)
+      );
+      
+      this.firebase.onMessageReceived().subscribe(
+        data => {
+          this.actionsService.presentToast("Reception d'une notification");
+          console.log(`FCM message:`, data);
+        },
+        err => console.log("msg", err) 
+      );
+
+    });
   }
 
   ngOnInit() {

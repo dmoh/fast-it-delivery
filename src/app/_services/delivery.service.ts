@@ -68,6 +68,15 @@ export class DeliveryService {
     }
   }
 
+  setTokenFcm(tokenFcm, platform = undefined) {
+    return this.http.post<any>(`${this.urlApi}/set/tokenfcm/user`, 
+      {
+        tokenFcm,
+        platform
+      },
+      {headers: this.headers} );
+  }
+
   getOrderAnalize(id: number, request = null): Observable<any> {
     return this.http.post<any>(`${this.urlApi}/deliverer/${id}/analyze`, request, {headers: this.headers} );
   }
