@@ -144,7 +144,7 @@ export class AppComponent implements OnInit {
 
       this.firebase.onMessageReceived().subscribe(
         data => {
-          this.actionsService.presentToast("Reception d'une notification");
+          // this.actionsService.presentToast("Reception d'une notification");
           console.log(`FCM message:`, data);
         },
         err => console.log("msg", err) 
