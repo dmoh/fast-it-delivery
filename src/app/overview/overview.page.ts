@@ -73,14 +73,14 @@ export class OverviewPage implements OnInit {
       if (this.platform.is('ios')) {
         this.firebase.grantPermission().then(hasPermission => console.log(hasPermission ? 'granted' : 'denied'));
         this.firebase.onApnsTokenReceived().subscribe(token => {
-          this.delivererService.setTokenFcm(token, 'ios');
+          this.delivererService.setTokenFcm(token, 'ios').subscribe();
           console.log('PUSH_TOKEN: IOS_TOKEN: ' , token);
         });
       }
     
       this.firebase.onTokenRefresh().subscribe(
         token => {
-          this.delivererService.setTokenFcm(token);
+          this.delivererService.setTokenFcm(token).subscribe();
           console.log(`FCM token refresh: ${token}`);
         },
         error => console.log("error", error)

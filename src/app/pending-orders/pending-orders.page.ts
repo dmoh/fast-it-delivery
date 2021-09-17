@@ -30,7 +30,6 @@ export class PendingOrdersPage implements OnInit, OnDestroy {
   constructor(private http: HttpClient, private authenticate: AuthenticationService, private deliveryService: DeliveryService, private router: Router) {
   }
 
-
   ngOnInit(){
     this.deliverer = new Deliverer();
     this.deliverer.orders = [];
