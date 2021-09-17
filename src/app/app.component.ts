@@ -121,12 +121,10 @@ export class AppComponent implements OnInit {
       this.firebase.getToken()
       .then( token => {
         console.log(`The token is`, token);
+        this.delivererService.setTokenFcm(token);
         console.log(`The token type`, typeof(token));
       })
       .catch(err => console.log("err token", err));
-      
-      const token = await this.firebase.getToken();
-      console.log(`The token async is`, token);
       
       if (this.platform.is('ios')) {
         this.firebase.grantPermission().then(hasPermission => console.log(hasPermission ? 'granted' : 'denied'));
@@ -134,6 +132,22 @@ export class AppComponent implements OnInit {
         this.firebase.onApnsTokenReceived().subscribe(token => console.log('PUSH_TOKEN: IOS_TOKEN: ' , token));
       }
       
+      if (this.platform.is('ios')) {
+        this.firebase.grantPermission().then(hasPermission => console.log(hasPermission ? 'granted' : 'denied'));
+        this.firebase.onApnsTokenReceived().subscribe(token => {
+          this.delivererService.setTokenFcm(token, 'ios');
+          console.log('PUSH_TOKEN: IOS_TOKEN: ' , token);
+        });
+      }
+    
+      this.firebase.onTokenRefresh().subscribe(
+        token => {
+          this.delivererService.setTokenFcm(token);
+          console.log(`FCM token refresh: ${token}`);
+        },
+        error => console.log("error", error)
+      );
+
       this.firebase.onMessageReceived().subscribe(
         data => {
           this.actionsService.presentToast("Reception d'une notification");
@@ -141,28 +155,6 @@ export class AppComponent implements OnInit {
         },
         err => console.log("msg", err) 
       );
-        
-      this.firebase.onTokenRefresh().subscribe(
-        data => console.log(`FCM token refresh: ${data}`),
-        error => console.log("error", error)
-      );
-
-      this.firebase.listChannels()
-      .then(channels => {
-        console.log(`listChannels is`, channels);
-        (<Array<any>> channels)?.forEach( channel => {
-          console.log("ID: " + channel.id + ", Name: " + channel.name);
-        });
-      })
-      .catch(err => console.log("err listChannels", err));
-
-      this.firebase.getInfo()
-      .then(info => {
-        console.log("getInfo", info);
-      })
-      .catch(err => console.log("err getInfo", err));
-
-
     });
   }
 
