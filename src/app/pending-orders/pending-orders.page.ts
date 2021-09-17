@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {NavigationExtras, Router} from '@angular/router';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AuthenticationService} from '@app/_services/authentication.service';
@@ -13,7 +13,7 @@ import { Subscription, timer } from 'rxjs';
   templateUrl: './pending-orders.page.html',
   styleUrls: ['./pending-orders.page.scss'],
 })
-export class PendingOrdersPage implements OnInit {
+export class PendingOrdersPage implements OnInit, OnDestroy {
 
   schedulePrepartionTimes: any[] = [];
   commerce: Restaurant;
@@ -75,5 +75,10 @@ export class PendingOrdersPage implements OnInit {
     // @ts-ignore
     // this.router.navigate(['detail-delivery'], navigationExtras);
     this.router.navigate([`/detail-delivery/${orderId}`]);
+  }  
+  
+  ngOnDestroy(): void {
+    this.timerSubscription.unsubscribe();
   }
+
 }

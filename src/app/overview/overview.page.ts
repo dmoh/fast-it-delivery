@@ -123,6 +123,7 @@ export class OverviewPage implements OnInit {
           }, 0);
         });
         
+    this.initializeApp();  
     //   getOrderSub.unsubscribe();
     // }, 1000);
   }

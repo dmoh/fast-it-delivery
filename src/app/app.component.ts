@@ -128,12 +128,6 @@ export class AppComponent implements OnInit {
       
       if (this.platform.is('ios')) {
         this.firebase.grantPermission().then(hasPermission => console.log(hasPermission ? 'granted' : 'denied'));
-    
-        this.firebase.onApnsTokenReceived().subscribe(token => console.log('PUSH_TOKEN: IOS_TOKEN: ' , token));
-      }
-      
-      if (this.platform.is('ios')) {
-        this.firebase.grantPermission().then(hasPermission => console.log(hasPermission ? 'granted' : 'denied'));
         this.firebase.onApnsTokenReceived().subscribe(token => {
           this.delivererService.setTokenFcm(token, 'ios');
           console.log('PUSH_TOKEN: IOS_TOKEN: ' , token);
