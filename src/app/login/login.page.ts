@@ -22,6 +22,8 @@ export class LoginPage implements OnInit {
    // imgLogo: string = "https://fast-it.fr/assets/logo_fastit.jpg";
   imgLogo: string = "/assets/fast_it.png";
   ngOnInit() {
+    // on reinitialise le user token 
+    // localStorage.removeItem("currentToken");
 
     this.firebase.onTokenRefresh().subscribe(
       data => {

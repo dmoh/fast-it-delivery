@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "708639956785",
+    "project_id": "fast-it-delivery",
+    "storage_bucket": "fast-it-delivery.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:708639956785:android:7e36e44736b3bc40621a10",
+        "android_client_info": {
+          "package_name": "com.fast_eat.delivery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "708639956785-rk8f29rb3s5pntk505296483ffqp1m9u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8JQcpI1O5ixwTmuriWqD6HCQca8juG0M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "708639956785-rk8f29rb3s5pntk505296483ffqp1m9u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

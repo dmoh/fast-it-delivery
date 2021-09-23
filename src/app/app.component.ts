@@ -105,8 +105,7 @@ export class AppComponent implements OnInit {
 
   initializeApp() {
     this.platform.ready().then( async () => {
-
-      this.paramIndex = this.appPages.length + 2;
+      this.paramIndex = this.appPages.length + 20;
       console.log("initializeApp paramIndex", this.paramIndex);
 
       this.statusBar.styleDefault();

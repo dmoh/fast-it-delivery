@@ -28,7 +28,8 @@ export class DetailDeliveryPage implements OnInit {
       return this._isDelivering;
   }
 
-  constructor(public alertController: AlertController,
+  constructor(private fb: FormBuilder,
+              public alertController: AlertController,
               private deliveryService: DeliveryService,
               private authenticate: AuthenticationService,
               private router: Router,
@@ -54,27 +55,22 @@ export class DetailDeliveryPage implements OnInit {
     // this.orderId = this.router.getCurrentNavigation().extras.state.orderId;
     this.deliveryService.getDeliverer().subscribe(deliverer => {
       console.log('deliverer', deliverer);
-      console.log('orderId du détail', this.orderId);
       this.deliveryService.getOrderById(+this.orderId).subscribe(orderById => {
-          //     console.log('orderById', orderById);
+          console.log('order customer', this.order.customer);
           if (orderById.deliverer?.id !== deliverer.id) {
             this.router.navigate(['pending-orders']);
           }
-          //     // let order: Order = new Order();
+          
           this.order = orderById;
-          //     // alert(this.order);
-          //     console.log(this.order);
+          this.isDelivering = this.order;
 
-          this.isDelivering = this.order.status >= 3 && this.order.date_delivered == null;
-          //     this.hasDeliveryCode = this.order.deliverCode != null;
+          this.hasDeliveryCode = this.order.deliverCode != null;
 
-          //     this.delivererForm = this.fb.group({
-          //       code: ['', Validators.required],
-          //       notCode: false
-          //     });
-          //   });
-          // });
-        // }
+          this.delivererForm = this.fb.group({
+            code: ['', Validators.required],
+            notCode: false
+          });
+      // }
       });
     });
   
@@ -217,7 +213,7 @@ export class DetailDeliveryPage implements OnInit {
           if (refresh) {
             console.warn('success', next);
             this.isDelivering = orderSave;
-            // window.location.reload();
+            window.location.reload();
           }
         },
         error => {

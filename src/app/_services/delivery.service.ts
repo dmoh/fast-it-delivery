@@ -110,6 +110,11 @@ export class DeliveryService {
           },
         ];
 
+        // On trie la liste des secteurs par ordre alphaetique
+        deliverer.sectors = deliverer?.sectors?.sort( function(sectorA, sectorB) {         
+          return sectorA.name.localeCompare(sectorB.name);
+        });
+
         deliverer?.sectors?.forEach( sector => {
           const urlSector = `/sector/${sector.id}/${(<string>sector.name).trim().replace(' ','')}`;
           appPageTable.push({
@@ -130,7 +135,6 @@ export class DeliveryService {
 
         this.appPagesSubject.next(appPageTable);
         return deliverer;
-        // alert("test micro");
       })
     );
   }

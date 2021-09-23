@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 export const environment = {
   production: false,
-  apiUrl: 'https://0600-2a01-e0a-298-5860-51cf-1aa3-d42e-7d59.ngrok.io',
+  apiUrl: 'https://api-fastit.fr',
   fastOff: 'Fast-Off',
   fastOnline: 'Fast-Online',
   queryStarted: 'begin',

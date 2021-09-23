@@ -1,33 +1,76 @@
 {
   "project_info": {
-    "project_number": "708639956785",
-    "project_id": "fast-it-delivery",
-    "storage_bucket": "fast-it-delivery.appspot.com"
+    "project_number": "422013982228",
+    "project_id": "fast-eat-279623",
+    "storage_bucket": "fast-eat-279623.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:708639956785:android:7e36e44736b3bc40621a10",
+        "mobilesdk_app_id": "1:422013982228:android:9adfc2256af80ca94d7901",
         "android_client_info": {
-          "package_name": "com.fast_eat.delivery"
+          "package_name": "com.fast_eat.business"
         }
       },
       "oauth_client": [
         {
-          "client_id": "708639956785-rk8f29rb3s5pntk505296483ffqp1m9u.apps.googleusercontent.com",
+          "client_id": "422013982228-t2tkf20mk2pi7rpcqhntbkhkdgv4bj8t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fast_eat.business",
+            "certificate_hash": "3135413d3b1b160133f52e449e57737cdf7c979c"
+          }
+        },
+        {
+          "client_id": "422013982228-9dbama5apa2solu6053q7neulsjbsh93.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB8JQcpI1O5ixwTmuriWqD6HCQca8juG0M"
+          "current_key": "AIzaSyBfpAU_Q57C-LrDG4_cLU1AnOZUsO8mOdc"
+        },
+        {
+          "current_key": "AIzaSyAQnBmQEyJcKIukrmZHbUAkGrs3-UKDoZw"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "708639956785-rk8f29rb3s5pntk505296483ffqp1m9u.apps.googleusercontent.com",
+              "client_id": "422013982228-9dbama5apa2solu6053q7neulsjbsh93.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:422013982228:android:7435c9860be43c4e4d7901",
+        "android_client_info": {
+          "package_name": "com.fast_eat.delivery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "422013982228-9dbama5apa2solu6053q7neulsjbsh93.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfpAU_Q57C-LrDG4_cLU1AnOZUsO8mOdc"
+        },
+        {
+          "current_key": "AIzaSyAQnBmQEyJcKIukrmZHbUAkGrs3-UKDoZw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "422013982228-9dbama5apa2solu6053q7neulsjbsh93.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

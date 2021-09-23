@@ -33,7 +33,6 @@ export class AuthenticationService {
     if(localStorage.getItem("currentToken"))
       console.warn("localStorage.getItem(currentToken)", JSON.parse(localStorage.getItem("currentToken")));
     
-    console.warn("currentTokenSubject.value.token", this.currentTokenSubject.value?.token);
     if (this.currentTokenSubject.value?.token) {
       this.headers = new HttpHeaders({
         'Content-Type': 'application/json; charset=utf-8',
@@ -47,21 +46,12 @@ export class AuthenticationService {
       'Content-Type': 'application/json; charset=utf-8'
     });
 
-    if (this.currentTokenSubject.value?.token) {
-      console.log("this.currentTokenSubject.value?.token",this.currentTokenSubject.value?.token);
-      // alert("currentTokenSubject");
-
-      this.headers = new HttpHeaders({
-        'Content-Type': 'application/json; charset=utf-8',
-        Authorization: `Bearer ${this.currentTokenSubject.value.token}`
-      });
-    }
-
     const optionRequete = {
       headers: this.headers
     };
 
-    console.log("optionRequete", optionRequete);
+    if (!environment.production)
+      console.log("optionRequete", optionRequete);
 
     // return this.http.post<any>(`${environment.apiUrl}/authentication_token`, { email, password }, optionRequete)
     return this.http.post<any>(`${environment.apiUrl}/api/login_check`, { email, password }, optionRequete)
