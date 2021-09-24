@@ -25,6 +25,7 @@ export class LoginPage implements OnInit {
     // on reinitialise le user token 
     // localStorage.removeItem("currentToken");
     console.warn(this.auth.currentTokenValue);
+    this.email = localStorage.getItem('username');
     if(this.auth.currentTokenValue && this.auth.currentTokenValue.token){
       if(this.auth.getPageAccess(this.auth.currentTokenValue)) {
         this.router.navigate(['overview']);
