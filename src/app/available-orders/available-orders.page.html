@@ -56,11 +56,11 @@
       </ion-item>
       <ion-item>
         <h3>Pourboire :</h3>
-        <h4>{{order.tipAmount}}€</h4>
+        <h4>{{order.tipAmount  | number : 2 }}}€</h4>
       </ion-item>
       <ion-item>
         <h3>Bonus:</h3>
-        <h4>{{order.bonusDeliverer}}€</h4>
+        <h4>{{order.bonusDeliverer/100  | number : 2 }}}€</h4>
       </ion-item>
       <ion-item>
         <ion-row>

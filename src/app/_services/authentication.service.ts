@@ -61,31 +61,7 @@ export class AuthenticationService {
           // Store user details and jwt token in local storage to keep user logged in between page refreshes
           this.currentTokenSubject.next(user);
           localStorage.setItem('currentToken',JSON.stringify(user) );
-
-          const jwtDecode: any = jwt_decode(user.token);
-          console.log("jwtDecode", jwtDecode);
-          
-          // localStorage.setItem('currentUser', JSON.stringify(user));
-          if (jwtDecode.username) {
-            // USER Account
-            localStorage.setItem('username', jwtDecode.username);
-          }
-
-          if (jwtDecode.roles) {
-            const roles = jwtDecode.roles;
-            if (
-                roles.indexOf('ROLE_SUPER_ADMIN') !== -1
-                || roles.indexOf('ROLE_DELIVERER') !== -1
-            ) {
-              // add icon and restaurant
-              localStorage.setItem('roles', JSON.stringify(roles));
-              this.actionsService.presentToastWithOptions("",'log-in',"Vous êtes connecté", "top","",null,2000);
-              return true;
-              // this.currentRolesSubject.next(roles);
-            }
-            this.actionsService.presentToastWithOptions("", 'log-in', "Vous êtes connecté", "top","",null,2000);
-            return false;
-          }
+          return this.getPageAccess(user);
         }),
         catchError(x => {
           console.log(x);
@@ -93,6 +69,35 @@ export class AuthenticationService {
           return null;
         })
       );
+  }
+
+  public getPageAccess(user: any){
+    const jwtDecode: any = jwt_decode(user.token);
+    console.log("jwtDecode", jwtDecode);
+    
+    // localStorage.setItem('currentUser', JSON.stringify(user));
+    if (jwtDecode.username) {
+      // USER Account
+      localStorage.setItem('username', jwtDecode.username);
+    }
+
+    if (jwtDecode.roles) {
+      const roles = jwtDecode.roles;
+      if (
+          roles.indexOf('ROLE_SUPER_ADMIN') !== -1
+          || roles.indexOf('ROLE_DELIVERER') !== -1
+      ) {
+        // add icon and restaurant
+        localStorage.setItem('roles', JSON.stringify(roles));
+        this.actionsService.presentToastWithOptions("",'log-in',"Vous êtes connecté", "top","",null,2000);
+        return true;
+        // this.currentRolesSubject.next(roles);
+      }
+      this.actionsService.presentToastWithOptions("", 'log-out', "Vous n'avez pas de profil Livreur", "top","",null,2000);
+      localStorage.clear();
+      this.currentTokenSubject.next(null);
+      return false;
+    }
   }
 
   public setDelivererStatus(status: boolean): Observable<any> {

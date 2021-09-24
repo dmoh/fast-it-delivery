@@ -24,6 +24,12 @@ export class LoginPage implements OnInit {
   ngOnInit() {
     // on reinitialise le user token 
     // localStorage.removeItem("currentToken");
+    console.warn(this.auth.currentTokenValue);
+    if(this.auth.currentTokenValue && this.auth.currentTokenValue.token){
+      if(this.auth.getPageAccess(this.auth.currentTokenValue)) {
+        this.router.navigate(['overview']);
+      }
+    }
 
     this.firebase.onTokenRefresh().subscribe(
       data => {

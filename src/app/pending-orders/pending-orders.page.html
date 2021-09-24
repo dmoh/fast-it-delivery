@@ -35,8 +35,8 @@
         <h4 *ngIf="order.payedAt != null"> {{ order.payedAt?.date | date: 'dd/MM/yyyy' }} à {{ order.payedAt.date |  date: 'HH:mm' }} </h4>
       </ion-item>
       <ion-item>
-        <h3> Accepté le: </h3>
-        <h4 *ngIf="order.date_taken_deliverer != null"> {{ order.date_taken_deliverer?.date | date: 'dd/MM/yyyy' }} à {{ order.date_taken_deliverer.date |  date: 'HH:mm' }} </h4>
+        <h3> Accepté (par {{order.business.name}}) le: </h3>
+        <h4 *ngIf="order.merchantValidateAt != null"> {{ order.merchantValidateAt?.date | date: 'dd/MM/yyyy' }} à {{ order.merchantValidateAt.date |  date: 'HH:mm' }} </h4>
       </ion-item>
       <ion-item>
         <h3>Temps de préparation :</h3>
@@ -45,7 +45,7 @@
       <ion-item>
         <ion-label>
           <h3>Cout de la livraison (<i>Bonus + Pourboire inclus</i>):</h3>
-          <h4>{{order.delivery_cost/100}} €</h4>
+          <h4>{{(order.delivery_cost/100)?.toFixed(2)}} €</h4>
         </ion-label>
       </ion-item>
 

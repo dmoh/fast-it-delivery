@@ -10,6 +10,8 @@ import { DeliveryService } from './_services/delivery.service';
 import { BehaviorSubject } from 'rxjs';
 import { FirebaseX } from '@ionic-native/firebase-x/ngx';
 import { ActionsService } from './_services/actions.service';
+import { ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
+import { Network } from "@ionic-native/network/ngx";
 
 @Component({
   selector: 'app-root',
@@ -92,18 +94,32 @@ export class AppComponent implements OnInit {
     }
   ];
 
+  networkSubject;
+
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private delivererService: DeliveryService,
     private firebase: FirebaseX,
+    private screenOrientation: ScreenOrientation,
+    private network: Network,
     private actionsService: ActionsService,
     private router: Router,
   ) {
   }
 
   initializeApp() {
+
+    this.networkSubject = this.network.onDisconnect().subscribe(() => {
+      this.actionsService.presentToastWithOptions("","arrow-up-outline", 'Vous n\'êtes plus connecté à internet.', "top","",1000);
+    });
+    this.networkSubject = this.network.onConnect().subscribe(() => {
+      this.actionsService.presentToastWithOptions("",'log-in',"Vous êtes connecté", "top","",null,2000);
+    });
+
+    this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
+
     this.platform.ready().then( async () => {
       this.paramIndex = this.appPages.length + 20;
       console.log("initializeApp paramIndex", this.paramIndex);

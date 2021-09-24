@@ -77,6 +77,12 @@ export class DeliveryService {
       {headers: this.headers} );
   }
 
+  /**
+   * 
+   * @param id @description non utilisé dans le backend
+   * @param request 
+   * @returns 
+   */
   getOrderAnalize(id: number, request = null): Observable<any> {
     return this.http.post<any>(`${this.urlApi}/deliverer/${id}/analyze`, request, {headers: this.headers} );
   }
