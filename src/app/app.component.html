@@ -2,25 +2,47 @@
   <ion-split-pane contentId="main-content">
     <ion-menu contentId="main-content" type="overlay">
       <ion-content>
-        <ion-list id="inbox-list">
-          <ion-list-header>Inbox</ion-list-header>
-          <ion-note>hi@ionicframework.com</ion-note>
-
-          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
-            <ion-item (click)="selectedIndex = i" routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" [class.selected]="selectedIndex == i">
-              <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
-              <ion-label>{{ p.title }}</ion-label>
+        <!-- <ion-item > -->
+          <ion-list >
+            <ion-list-header style="align-items: center;width: 100%" class="ion-text-center ion-margin-top">
+              <ion-col class="ion-text-center" >
+                <ion-icon style="font-size:130px" lines="inset" color="primary" ios="person-circle-outline" md="person-circle-sharp"></ion-icon>
+              </ion-col>
+            </ion-list-header>
+            <ion-list-header>
+              <ion-col class="ion-text-center" >
+                <ion-badge color="success" *ngIf="statusDeliverer">{{fastOn}}</ion-badge>
+                <ion-badge color="danger" *ngIf="!statusDeliverer">{{fastOff}}</ion-badge>
+              </ion-col>
+            </ion-list-header>
+            <ion-item ion-margin-bottom>
+              <ion-list-header class="ion-text-center">
+                <ion-col class="ion-text-center" >
+                  <ion-note>{{userName}}</ion-note>
+                </ion-col>
+              </ion-list-header>
             </ion-item>
-          </ion-menu-toggle>
-        </ion-list>
+            <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
+              <ion-item *ngIf="p.displayDefault || statusDeliverer" (click)="selectedIndex = i" routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" [class.selected]="selectedIndex == i">
+                <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
+                <ion-label>{{ p.title }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          </ion-list>
 
         <ion-list id="labels-list">
-          <ion-list-header>Labels</ion-list-header>
+          <!-- <ion-list-header>Paramètres</ion-list-header> -->
 
-          <ion-item *ngFor="let label of labels" lines="none">
-            <ion-icon slot="start" ios="bookmark-outline" md="bookmark-sharp"></ion-icon>
-            <ion-label>{{ label }}</ion-label>
-          </ion-item>
+          <ion-menu-toggle auto-hide="false" *ngFor="let param of params; let i = index">
+            <ion-item (click)="selectedIndex = paramIndex + i" routerDirection="root" [routerLink]="[param.url]" lines="none" detail="false" [class.selected]=" selectedIndex == paramIndex + i">
+              <ion-icon slot="start" [ios]="param.icon + '-outline'" [md]="param.icon + '-sharp'"></ion-icon>
+              <ion-label>{{ param.title }}</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+<!-- 
+          <ion-toggle ion-toggle-text ng-true-value="so true" ng-false-value="so false" ng-model="statusDeliverer">
+            Text by value: <b>{{ textByValue || 'so false' }}</b>
+          </ion-toggle> -->
         </ion-list>
       </ion-content>
     </ion-menu>

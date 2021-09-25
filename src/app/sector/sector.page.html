@@ -1,0 +1,100 @@
+<!-- <ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button color="primary"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{ sector }}</ion-title>
+    <ion-buttons class="ion-margin-right" slot="end">
+      <ion-icon slot="start" color="primary" style="font-size: 25px" 
+      ios="power-outline" md="power-sharp" (click)="onLogout()"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{ sector }}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div id="container">
+    <strong class="capitalize">{{ sector }}</strong>
+    <p>Explore <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  </div>
+</ion-content> 
+-->
+
+
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button color="primary"></ion-menu-button>
+    </ion-buttons>
+    <ion-title style="font-size: 90%" class="ion-text-center">
+      {{sector}}
+    </ion-title>
+    <ion-buttons class="ion-margin-right" slot="end">
+      <ion-icon slot="start" color="primary" style="font-size: 25px" 
+      ios="power-outline" md="power-sharp" (click)="onLogout()"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<!-- Custom Refresher Properties -->
+
+<!-- Custom Refresher Content -->
+<ion-content *ngIf="statusDeliverer" [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+            pullingIcon="chevron-down-circle-outline"
+            pullingText="Pull to refresh"
+            refreshingSpinner="circles"
+            refreshingText="Synchronisation en cours...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ion-content class="ion-margin-top ion-margin-bottom ion-text-center" *ngIf="(orders?.length == 0)" [fullscreen]="true">
+    <h3> 0 commande disponible</h3> 
+  </ion-content>
+  <ion-list>
+    <ion-item-group *ngFor="let order of orders">
+      <ion-item>
+        <ion-label>
+          <h3>Une commande est en attente de livraison chez:</h3>
+          <h4 color="primary"  style="text-transform: uppercase; font-size: large"> {{order.name}}</h4>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <h3>Commande prise le : </h3>
+        <h4 >{{ order.payedAt.date | date: 'dd/MM/yyyy' }} {{ order.payedAt.date |  date: 'HH:mm' }} </h4>
+      </ion-item>
+      <ion-item>
+        <h3>Temps de préparation :</h3>
+        <h4>({{order.preparationTime}} min)</h4>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <h3>Cout de la livraison (<i>Bonus + Pourboire inclus</i>) :</h3>
+          <h4>{{order.delivery_cost/100}}€</h4>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <h3>Pourboire :</h3>
+        <h4>{{order.tipAmount?.toFixed(2)}}€</h4>
+      </ion-item>
+      <ion-item>
+        <h3>Bonus (<i>Fast IT</i>):</h3>
+        <h4>{{(order.bonusDeliverer/100)?.toFixed(2) }}€</h4>
+      </ion-item>
+      <ion-item>
+        <ion-row>
+          <ion-col class="ion-margin-top ion-margin-bottom ion-text-center">
+            <ion-button (click)="presentAlertConfirm(order.id)"> Accepter la livraison</ion-button><p></p>
+          </ion-col>
+        </ion-row>
+      </ion-item>
+    </ion-item-group>
+  </ion-list>
+
+</ion-content>
+
