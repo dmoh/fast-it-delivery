@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        delivery {
+            storeFile file('C:\\Users\\eabdallah\\Documents\\delivery74.jks')
+            storePassword 'delivery74'
+            keyAlias 'key2'
+            keyPassword 'delivery74'
+        }
+    }
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "com.fast_eat.delivery"
@@ -9,6 +17,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.delivery
     }
     buildTypes {
         release {
