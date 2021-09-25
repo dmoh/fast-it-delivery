@@ -109,13 +109,23 @@ export class AppComponent implements OnInit {
   ) {
   }
 
+  ngOnInit() {
+    const path = window.location.pathname.split('sector/')[1];
+    if (path !== undefined) {
+      this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
+    }
+    console.log("ngOnInit paramIndex", this.paramIndex);
+
+    this.initializeApp();
+  }
+
   initializeApp() {
 
     this.networkSubject = this.network.onDisconnect().subscribe(() => {
-      this.actionsService.presentToastWithOptions("","arrow-up-outline", 'Vous n\'êtes plus connecté à internet.', "top","",1000);
+      this.actionsService.presentToastWithOptions("","log-out", 'Vous n\'êtes plus connecté à internet.', "bottom","");
     });
     this.networkSubject = this.network.onConnect().subscribe(() => {
-      this.actionsService.presentToastWithOptions("",'log-in',"Vous êtes connecté", "top","",null,2000);
+      this.actionsService.presentToastWithOptions("",'log-in',"Vous êtes connecté", "bottom","",null,10000);
     });
 
     this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
@@ -147,33 +157,23 @@ export class AppComponent implements OnInit {
           this.delivererService.setTokenFcm(token, 'ios').subscribe();
           console.log('PUSH_TOKEN: IOS_TOKEN: ' , token);
         });
+      } else {
+        this.firebase.onTokenRefresh().subscribe(
+          token => {
+            this.delivererService.setTokenFcm(token).subscribe();
+            console.log(`FCM token refresh: ${token}`);
+          },
+          error => console.log("error", error)
+        );
       }
     
-      this.firebase.onTokenRefresh().subscribe(
-        token => {
-          this.delivererService.setTokenFcm(token).subscribe();
-          console.log(`FCM token refresh: ${token}`);
-        },
-        error => console.log("error", error)
-      );
-
       this.firebase.onMessageReceived().subscribe(
         data => {
-          // this.actionsService.presentToast("Reception d'une notification");
-          console.log(`FCM message:`, data);
+          this.actionsService.presentToast("Reception d'une notification");
+          console.log(`FCM message reception d'une notification:`, data);
         },
         err => console.log("msg", err) 
       );
     });
-  }
-
-  ngOnInit() {
-    const path = window.location.pathname.split('sector/')[1];
-    if (path !== undefined) {
-      this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
-    }
-    console.log("ngOnInit paramIndex", this.paramIndex);
-
-    this.initializeApp();
   }
 }

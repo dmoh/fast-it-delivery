@@ -103,15 +103,19 @@ export class OverviewPage implements OnInit {
 
     this.rangeDate = {dtstart : new Date().toLocaleDateString(), dtend : new Date().toLocaleDateString()};
 
-    if (!this.userInfo) {
+    // if (!this.userInfo) {
       this.delivererService.getDeliverer().subscribe( deliverer => {
       //  localStorage.setItem("userInfo", JSON.stringify(deliverer));
-      // console.log("userInfo", this.userInfo);
+      console.log("deliverer", deliverer);
       // console.log("deliverer", deliverer);
       // this.userInfo;
       this.statusDeliverer = this.userInfo?.status ?? false;
      });
-    }
+    // }
+    // else {
+
+    // }
+
     // setTimeout(() => {
     const getOrderSub = this.delivererService.getOrderAnalize(1, this.rangeDate)
         .subscribe((response) => {
