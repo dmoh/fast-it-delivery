@@ -7,7 +7,7 @@ import { environment } from '@environments/environment';
 import { Deliverer } from './_models/deliverer';
 import { Router } from '@angular/router';
 import { DeliveryService } from './_services/delivery.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { FirebaseX } from '@ionic-native/firebase-x/ngx';
 import { ActionsService } from './_services/actions.service';
 import { ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
@@ -27,7 +27,6 @@ export class AppComponent implements OnInit {
    * "stocké a la connexion/authentication_token x= connexion/api/login_check"
    */
   public get userName () {
-    // console.log("userName",localStorage.getItem('username'));
     return localStorage.getItem('username') ?? "livreur@fast-it.fr";
   }
 
@@ -35,52 +34,15 @@ export class AppComponent implements OnInit {
   * @description userInfo recuperé dans le localstorage "stocké à la connexion"
   */
   public get userInfo (): Deliverer {
-    // console.log("userInfo", <Deliverer> JSON.parse(localStorage.getItem('userInfo')));
-    // return <Deliverer> JSON.parse(localStorage.getItem('userInfo')) ?? null;
     return this.delivererService.currentUser;
   }
 
   fastOn = environment.fastOnline;
   fastOff = environment.fastOff;
-  // sectors = new Array<any>();
 
   public get statusDeliverer () {
     return this.delivererService.currentUser?.status ?? false
   }
-
-  // public appPages: BehaviorSubject<Array<any>> = new BehaviorSubject<Array<any>>( [
-  //   {
-  //     title: 'Vue Globale',
-  //     url: '/overview',
-  //     icon: 'eye',
-  //     displayDefault: true,
-  //     // icon: 'mail'
-  //   },
-  //   {
-  //     title: 'Commandes en cours',
-  //     url: '/pending-orders',
-  //     icon: 'bicycle',
-  //     displayDefault: true,
-  //     // icon: 'paper-plane'
-  //   },
-  //   {
-  //     title: 'Commandes disponibles',
-  //     url: '/available-orders',
-  //     icon: 'flash',
-  //     // icon: 'notifications-circle'
-  //   },
-  //   {
-  //     title: 'Commandes livrées',
-  //     url: '/delivered-orders',
-  //     icon: 'checkmark-done',
-  //     displayDefault: true,
-  //     // url: '/sector/delivered-orders',
-  //     // icon: 'heart'
-  //   },
-  // ]);
-
-  // public indexParams = this.appPages.length + 1;
-  // public paramIndex = this.appPages.length + 1;
 
   public get appPages(): Array<any> {
     return this.delivererService.appPagesSubject.value;
@@ -95,6 +57,8 @@ export class AppComponent implements OnInit {
   ];
 
   networkSubject;
+  timerSubscription: Subscription;
+  second: number;
 
   constructor(
     private platform: Platform,
@@ -157,14 +121,34 @@ export class AppComponent implements OnInit {
           error => console.log("error", error)
         );
       }
-    
-      this.firebase.onMessageReceived().subscribe(
-        data => {
-          // this.actionsService.presentToast("Reception d'une notification");
-          console.log(`AppComponent FCM notif :`, data);
-        },
-        err => console.log("msg", err) 
-      );
     });
+
+    this.firebase.onMessageReceived().subscribe(
+      data => {
+        console.log(`Data FCM notif :`, data);
+        if(data?.sector) {
+          const urlSector = `/sector/${(<string>data.sector).trim().replace(' ','')}`;
+          console.log("urlSector", urlSector);
+          this.router.navigate([urlSector]);
+        }
+      },
+      err => console.error("error onMessageReceived", err) 
+    );
   }
+
 }
+
+/**
+ * const source = timer(4000, 7000);
+    this.timerSubscription = source.subscribe(val => {
+      this.second = val;
+      this.deliveryService.getCurrentOrders().subscribe((delivererCurrent) => {
+        console.log(delivererCurrent);
+        this.deliverer = delivererCurrent;
+        this.orders = this.deliverer?.orders ?? new Array();
+      });
+    });
+    setTimeout(() => {
+      this.timerSubscription.unsubscribe();
+    }, 1000000);
+ */

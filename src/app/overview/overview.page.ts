@@ -85,16 +85,6 @@ export class OverviewPage implements OnInit {
           error => console.log("error", error)
         );
       }
-
-      this.firebase.onMessageReceived().subscribe(
-        data => {
-          console.log(`Overview FCM notif :`, data);
-          const urlSector = `/sector/${(<string>data.sector ?? '').trim().replace(' ','')}`;
-          console.log("urlSector", urlSector);
-        },
-        err => console.log("msg", err) 
-      );
-
     });
   }
 
