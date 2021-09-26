@@ -157,7 +157,7 @@ export class AppComponent implements OnInit {
         },
         err => console.error("error onMessageReceived", err) 
       );
-    });
+    // });
     // setTimeout(() => {
     //   this.timerSubscription.unsubscribe();
     // }, 1000000);
