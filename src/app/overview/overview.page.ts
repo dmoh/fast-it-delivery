@@ -67,8 +67,8 @@ export class OverviewPage implements OnInit {
   initializeApp() {
     this.platform.ready().then( async () => {
 
-      const tokenFcm = await this.firebase.getToken();
-      console.log(`The token async is`, tokenFcm);
+      // const tokenFcm = await this.firebase.getToken();
+      // console.log(`The token async is`, tokenFcm);
       
       if (this.platform.is('ios')) {
         this.firebase.grantPermission().then(hasPermission => console.log(hasPermission ? 'granted' : 'denied'));
@@ -76,20 +76,21 @@ export class OverviewPage implements OnInit {
           this.delivererService.setTokenFcm(token, 'ios').subscribe();
           console.log('PUSH_TOKEN: IOS_TOKEN: ' , token);
         });
+      } else {
+        this.firebase.onTokenRefresh().subscribe(
+          token => {
+            this.delivererService.setTokenFcm(token).subscribe();
+            console.log(`FCM token refresh: ${token}`);
+          },
+          error => console.log("error", error)
+        );
       }
-    
-      this.firebase.onTokenRefresh().subscribe(
-        token => {
-          this.delivererService.setTokenFcm(token).subscribe();
-          console.log(`FCM token refresh: ${token}`);
-        },
-        error => console.log("error", error)
-      );
-      
+
       this.firebase.onMessageReceived().subscribe(
         data => {
-          // this.actionsService.presentToast("Reception d'une notification");
-          console.log(`FCM message:`, data);
+          console.log(`Overview FCM notif :`, data);
+          const urlSector = `/sector/${(<string>data.sector ?? '').trim().replace(' ','')}`;
+          console.log("urlSector", urlSector);
         },
         err => console.log("msg", err) 
       );
@@ -105,10 +106,9 @@ export class OverviewPage implements OnInit {
 
     // if (!this.userInfo) {
       this.delivererService.getDeliverer().subscribe( deliverer => {
-      //  localStorage.setItem("userInfo", JSON.stringify(deliverer));
-      console.log("deliverer", deliverer);
-      // console.log("deliverer", deliverer);
-      // this.userInfo;
+        //  localStorage.setItem("userInfo", JSON.stringify(deliverer));
+        console.log("deliverer", deliverer);
+        // this.userInfo;
       this.statusDeliverer = this.userInfo?.status ?? false;
      });
     // }

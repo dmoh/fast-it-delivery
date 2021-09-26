@@ -137,19 +137,10 @@ export class AppComponent implements OnInit {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
       
-      this.firebase.getId().then( id => console.log('id', id));
-      this.firebase.getCurrentUser()
-      .then(user => console.log('user', user))
-      .catch(err => console.log('getcurruser', err));
-      
-      // alert("init");
-      this.firebase.getToken()
-      .then( token => {
-        console.log(`The token is`, token);
-        this.delivererService.setTokenFcm(token).subscribe();
-        console.log(`The token type`, typeof(token));
-      })
-      .catch(err => console.log("err token", err));
+      // this.firebase.getId().then( id => console.log('id', id));
+      // this.firebase.getCurrentUser()
+      // .then(user => console.log('user', user))
+      // .catch(err => console.log('getcurruser', err));
       
       if (this.platform.is('ios')) {
         this.firebase.grantPermission().then(hasPermission => console.log(hasPermission ? 'granted' : 'denied'));
@@ -169,8 +160,8 @@ export class AppComponent implements OnInit {
     
       this.firebase.onMessageReceived().subscribe(
         data => {
-          this.actionsService.presentToast("Reception d'une notification");
-          console.log(`FCM message reception d'une notification:`, data);
+          // this.actionsService.presentToast("Reception d'une notification");
+          console.log(`AppComponent FCM notif :`, data);
         },
         err => console.log("msg", err) 
       );

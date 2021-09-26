@@ -31,14 +31,6 @@ export class LoginPage implements OnInit {
         this.router.navigate(['overview']);
       }
     }
-
-    this.firebase.onTokenRefresh().subscribe(
-      data => {
-        console.log(`FCM token refresh: ${data}`);
-        // alert(data);
-      },
-      error => console.log("error", error)
-    );
   }
 
   async onSubmit() {
