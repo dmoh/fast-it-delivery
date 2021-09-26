@@ -19,6 +19,7 @@
               <ion-list-header class="ion-text-center">
                 <ion-col class="ion-text-center" >
                   <ion-note>{{userName}}</ion-note>
+                  <ion-badge [color]="notificationNumber > 0 ? '' : 'void'"> {{notificationNumber | async}}</ion-badge>
                 </ion-col>
               </ion-list-header>
             </ion-item>

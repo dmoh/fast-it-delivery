@@ -59,6 +59,9 @@ export class AppComponent implements OnInit {
   networkSubject;
   timerSubscription: Subscription;
   second: number;
+   get  notificationNumber () {
+    return this.firebase?.getBadgeNumber();
+  };
 
   constructor(
     private platform: Platform,
@@ -129,6 +132,8 @@ export class AppComponent implements OnInit {
         if(data?.sector) {
           const urlSector = `/sector/${(<string>data.sector).trim().replace(' ','')}`;
           console.log("urlSector", urlSector);
+
+          // this.firebase.clearAllNotifications();
           this.router.navigate([urlSector]);
         }
       },
