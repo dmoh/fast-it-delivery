@@ -94,7 +94,7 @@ export class AppComponent implements OnInit {
       this.actionsService.presentToastWithOptions("","log-out", 'Vous n\'êtes plus connecté à internet.', "bottom","");
     });
     this.networkSubject = this.network.onConnect().subscribe(() => {
-      this.actionsService.presentToastWithOptions("",'log-in',"Vous êtes connecté", "bottom","",null,10000);
+      this.actionsService.presentToastWithOptions("",'log-in',"Vous êtes connecté", "top","",null,10000);
     });
 
     this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
