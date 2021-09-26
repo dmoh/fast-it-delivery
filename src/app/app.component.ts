@@ -7,7 +7,7 @@ import { environment } from '@environments/environment';
 import { Deliverer } from './_models/deliverer';
 import { Router } from '@angular/router';
 import { DeliveryService } from './_services/delivery.service';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription, timer } from 'rxjs';
 import { FirebaseX } from '@ionic-native/firebase-x/ngx';
 import { ActionsService } from './_services/actions.service';
 import { ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
@@ -59,7 +59,8 @@ export class AppComponent implements OnInit {
   networkSubject;
   timerSubscription: Subscription;
   second: number;
-   get  notificationNumber () {
+  
+  get  notificationNumber () {
     return this.firebase?.getBadgeNumber();
   };
 
@@ -134,26 +135,33 @@ export class AppComponent implements OnInit {
           console.log("urlSector", urlSector);
 
           // this.firebase.clearAllNotifications();
-          this.router.navigate([urlSector]);
+          // this.router.navigate([urlSector]);
         }
       },
       err => console.error("error onMessageReceived", err) 
     );
+
+    const source = timer(2000, 5000);
+    // this.timerSubscription = source.subscribe(val => {
+      // this.second = val;
+      this.firebase.onMessageReceived().subscribe(
+        data => {
+          console.log(`Data onMessageReceived:`, data);
+          if(data?.sector) {
+            const urlSector = `/sector/${(<string>data.sector).trim().replace(' ','')}`;
+            console.log("urlSector", urlSector);
+
+            // this.firebase.clearAllNotifications();
+            this.router.navigate([urlSector]);
+          }
+        },
+        err => console.error("error onMessageReceived", err) 
+      );
+    });
+    // setTimeout(() => {
+    //   this.timerSubscription.unsubscribe();
+    // }, 1000000);
   }
 
 }
-
-/**
- * const source = timer(4000, 7000);
-    this.timerSubscription = source.subscribe(val => {
-      this.second = val;
-      this.deliveryService.getCurrentOrders().subscribe((delivererCurrent) => {
-        console.log(delivererCurrent);
-        this.deliverer = delivererCurrent;
-        this.orders = this.deliverer?.orders ?? new Array();
-      });
-    });
-    setTimeout(() => {
-      this.timerSubscription.unsubscribe();
-    }, 1000000);
- */
+    
