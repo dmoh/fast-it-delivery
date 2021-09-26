@@ -12,6 +12,7 @@ import { FirebaseX } from '@ionic-native/firebase-x/ngx';
 import { ActionsService } from './_services/actions.service';
 import { ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
 import { Network } from "@ionic-native/network/ngx";
+// import { ForegroundService } from '@ionic-native/foreground-service/ngx';
 
 @Component({
   selector: 'app-root',
@@ -129,38 +130,18 @@ export class AppComponent implements OnInit {
 
     this.firebase.onMessageReceived().subscribe(
       data => {
-        console.log(`Data FCM notif :`, data);
+        console.log(`Data onMessageReceived:`, data);
         if(data?.sector) {
           const urlSector = `/sector/${(<string>data.sector).trim().replace(' ','')}`;
           console.log("urlSector", urlSector);
 
           // this.firebase.clearAllNotifications();
-          // this.router.navigate([urlSector]);
+          this.actionsService.presentToastWithOptions("","", 'Reception notification: ' + urlSector.trim().replace('/',' '), "bottom","",2000);
+          this.router.navigate([urlSector]);
         }
       },
       err => console.error("error onMessageReceived", err) 
     );
-
-    const source = timer(2000, 5000);
-    // this.timerSubscription = source.subscribe(val => {
-      // this.second = val;
-      this.firebase.onMessageReceived().subscribe(
-        data => {
-          console.log(`Data onMessageReceived:`, data);
-          if(data?.sector) {
-            const urlSector = `/sector/${(<string>data.sector).trim().replace(' ','')}`;
-            console.log("urlSector", urlSector);
-
-            // this.firebase.clearAllNotifications();
-            this.router.navigate([urlSector]);
-          }
-        },
-        err => console.error("error onMessageReceived", err) 
-      );
-    // });
-    // setTimeout(() => {
-    //   this.timerSubscription.unsubscribe();
-    // }, 1000000);
   }
 
 }
