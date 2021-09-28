@@ -18,6 +18,7 @@ export class Order {
   idReference?: string = null; // AAAAMMNUMID EXemple: 20200800000001
   cartDetail: Cart;
   status: number;
+  comment: string;
   // tslint:disable-next-line:variable-name
   delivery_cost: number;
   date_delivered: any;
