@@ -98,7 +98,7 @@ export class DetailDeliveryPage implements OnInit {
         this.finalizeDelivery();
       }
       else {
-        this.actionsService.presentToastWithOptions("",'log-in',"Veuillez saisir un code correct !", "top","",null,2000);
+        this.actionsService.presentToastWithOptions("",'sad',"Veuillez saisir le bon code !", "top","",null,2000);
         return;
       }
     }

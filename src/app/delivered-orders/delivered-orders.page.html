@@ -37,11 +37,11 @@
           <h4> {{ order.payedAt.date | date: 'dd/MM/yyyy' }} à {{ order.payedAt.date |  date: 'HH:mm' }} </h4>
         </ion-label>
       </ion-item>
-    -->
+      -->
       <ion-item>
         <ion-label>
-          <h3> Accepté le: </h3>
-          <h4> {{ order.date_taken_deliverer.date | date: 'dd/MM/yyyy' }} à {{ order.date_taken_deliverer.date |  date: 'HH:mm' }} </h4>
+          <h3> Récupéré le: </h3>
+          <h4> {{ order.date_taken_deliverer?.date | date: 'dd/MM/yyyy' }} à {{ order.date_taken_deliverer?.date |  date: 'HH:mm' }} </h4>
         </ion-label>
       </ion-item>
       <ion-item>
@@ -60,7 +60,6 @@
       <ion-row>
         <ion-col style="text-align: center">
           <ion-text size="large" color ="success">Terminée</ion-text><br /><br />
-          <!-- <ion-button (click)="onSubmit(order.id)" size="small" color ="primary">Détail de la livraison</ion-button><br /><br /> -->
         </ion-col>
       </ion-row>
 

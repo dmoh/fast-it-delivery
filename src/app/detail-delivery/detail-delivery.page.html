@@ -76,7 +76,7 @@
               <ion-button [disabled]="isDelivered" (click)="onValidateWithoutCode()" size="medium">Sans code </ion-button><p></p>
           </ion-col>
           <ion-col class="ion-margin-top ion-margin-bottom ion-text-center">
-              <ion-button [disabled]="isDelivered" (click)="onValidateDelivery()" size="medium">Valider </ion-button><p></p>
+              <ion-button [disabled]="!isDelivered" (click)="onValidateDelivery()" size="medium">Valider </ion-button><p></p>
           </ion-col>
       </ion-row>
     </form>
