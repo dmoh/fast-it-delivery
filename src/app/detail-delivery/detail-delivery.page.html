@@ -43,7 +43,7 @@
     <ion-item-divider>
         <ion-label>CLIENT</ion-label>
     </ion-item-divider>
-    <ng-container *ngIf="isDelivering">
+    <ng-container *ngIf="!isDelivering">
       <ion-item lines="none" *ngIf="order.customer.addresses"><b>Nom: {{order.customer.addresses[0].name | titlecase }}</b></ion-item>
       <ion-item lines="none" *ngIf="order.customer.addresses"><b>Adresse:</b> {{order.customer.addresses[0].street}}</ion-item>
       <ion-item lines="none" *ngIf="order.customer.addresses"><b>Ville:</b> {{order.customer.addresses[0].city}}</ion-item>
@@ -60,12 +60,26 @@
       </ion-item>
 
       <!-- {{ order.customer | json }} -->
+      
+      <form [formGroup]="delivererForm" *ngIf="delivererForm">
+        <ion-list *ngIf="hasDeliveryCode">
+          <ion-item>
+            <ion-label position="stacked"><b>Code</b></ion-label>
+            <ion-input formControlName="code" type="text">
+            </ion-input>
+          </ion-item>
+        </ion-list>
 
-      <ion-row >
-          <ion-col class="ion-margin-top ion-margin-bottom ion-text-center">
-              <ion-button (click)="finalizeDelivery()" size="medium">Valider </ion-button><p></p>
-          </ion-col>
-      </ion-row>
+        <ion-row >
+            <ion-col *ngIf="order.customer && isAllowed" class="ion-margin-top ion-margin-bottom ion-text-center">
+                <ion-button (click)="onValidateWithoutCode()" size="medium">Sans code </ion-button><p></p>
+            </ion-col>
+            <ion-col class="ion-margin-top ion-margin-bottom ion-text-center">
+                <ion-button (click)="onValidateDelivery()" size="medium">Valider </ion-button><p></p>
+            </ion-col>
+        </ion-row>
+    </form>
+
     </ng-container>
   </ion-list>
 

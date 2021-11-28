@@ -7,6 +7,7 @@ import { Order } from '@app/_models/order';
 import {Restaurant} from "@app/_models/restaurant";
 import {User} from "@app/_models/user";
 import { AuthenticationService } from '@app/_services/authentication.service';
+import { ActionsService } from '@app/_services/actions.service';
 
 @Component({
   selector: 'app-detail-delivery',
@@ -19,29 +20,29 @@ export class DetailDeliveryPage implements OnInit {
   isValid: boolean;
   orderId: string;
   order: Order;
-  
+  isDelivered: boolean;
   _isDelivering: boolean;
-  set isDelivering(order: any) {
-      this._isDelivering = order?.status >= 3 && order?.date_delivered == null ;
-  }
+  isAllowed: boolean;
+
+  static ROLES_ALLOWED: Array<string> = ["ROLE_SUPER_ADMIN","ROLE_SUPER_DELIVERER"];
+
   get isDelivering() {
       return this._isDelivering;
   }
+  set isDelivering(order: any) {
+      this._isDelivering = order?.status >= 3 && order?.date_delivered == null ;
+  }
+  
 
   constructor(private fb: FormBuilder,
               public alertController: AlertController,
               private deliveryService: DeliveryService,
               private authenticate: AuthenticationService,
               private router: Router,
+              public actionsService: ActionsService,
               private route: ActivatedRoute) {
-    // this.route.queryParams.subscribe(params => {
-    //  if (this.router.getCurrentNavigation().extras.state) {
-    //    this.orderId = this.router.getCurrentNavigation().extras.state.orderId;
-     //   console.log('orderId du détail 1', this.orderId);
-     // }
-    // });
-
     this.isDelivering = null;
+    this.isDelivered = null;
     this.order = new Order();
     this.order.business = new Restaurant();
     this.order.customer = new User();
@@ -50,31 +51,28 @@ export class DetailDeliveryPage implements OnInit {
   ngOnInit() {
     this.isValid = true;
     this.orderId = this.route.snapshot.paramMap.get('id');
-    // this.route.queryParams.subscribe(params => {
-    // if (this.router.getCurrentNavigation().extras.state) {
-    // this.orderId = this.router.getCurrentNavigation().extras.state.orderId;
     this.deliveryService.getDeliverer().subscribe(deliverer => {
       console.log('deliverer', deliverer);
       this.deliveryService.getOrderById(+this.orderId).subscribe(orderById => {
-          console.log('order customer', this.order.customer);
-          if (orderById.deliverer?.id !== deliverer.id) {
-            this.router.navigate(['pending-orders']);
-          }
-          
-          this.order = orderById;
-          this.isDelivering = this.order;
+        console.log('order customer', this.order.customer);
+        if (orderById.deliverer?.id !== deliverer.id) {
+          this.router.navigate(['pending-orders']);
+        }
 
-          this.hasDeliveryCode = this.order.deliverCode != null;
+        this.order = orderById;
+        this.isDelivering = this.order;
+        this.isDelivered = this.order?.status > 3 && this.order?.date_delivered.date;
+        this.hasDeliveryCode = this.order.deliverCode != null;
+        this.isAllowed = DetailDeliveryPage.ROLES_ALLOWED.findIndex(roleAllowed => this.order.deliverer.roles.includes(roleAllowed)) != -1;
 
-          this.delivererForm = this.fb.group({
-            code: ['', Validators.required],
-            notCode: false
-          });
-      // }
+        this.delivererForm = this.fb.group({
+          code: ['', Validators.required],
+          notCode: false
+        });
+
       });
     });
   
-    console.log('order', this.order);
   }
 
   public linkToAddresses(address: string) {
@@ -91,7 +89,7 @@ export class DetailDeliveryPage implements OnInit {
   }
 
   onValidateDelivery(): void {
-    if (this.isDelivering) {
+    if (this.isDelivering || this.isDelivered) {
       if (this.hasDeliveryCode && !this.delivererForm.value.notCode) {
         this.isValid = this.delivererForm.value.code === this.order.deliverCode;
       }
@@ -100,6 +98,7 @@ export class DetailDeliveryPage implements OnInit {
         this.finalizeDelivery();
       }
       else {
+        this.actionsService.presentToastWithOptions("",'log-in',"Veuillez saisir un code correct !", "top","",null,2000);
         return;
       }
     }
@@ -107,6 +106,7 @@ export class DetailDeliveryPage implements OnInit {
 
   onValidateWithoutCode() {
     this.delivererForm.value.notCode = true;
+    this.onValidateDelivery();
   }
 
   async onTakenDelivery() {
@@ -153,8 +153,12 @@ export class DetailDeliveryPage implements OnInit {
     }
   }
 
-  public async finalizeDelivery() {
+  public async finalizeDelivery(test: boolean = true) {
     let order: any;
+    if (test){
+      alert('ok');
+      return;
+    }
     const dateDelivered = '@' + Math.round(Date.now() / 1000) ;
 
     order = {
@@ -221,6 +225,8 @@ export class DetailDeliveryPage implements OnInit {
         }
     );
   }
+
+  
 
   onLogout() {
     this.authenticate.logout();

@@ -69,7 +69,7 @@ export class DeliveryService {
   }
 
   setTokenFcm(tokenFcm, platform = undefined) {
-    return this.http.post<any>(`${this.urlApi}/set/tokenfcm/user`, 
+    return this.http.post<any>(`${this.urlApi}/set/tokenfcm/deliverer`,
       {
         tokenFcm,
         platform

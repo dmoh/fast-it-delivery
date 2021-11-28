@@ -84,7 +84,7 @@ export class ActionsService {
   public async presentToastWithOptions(header: any = 'Toast header',
   icon: any = 'star',
   message: any = 'Click to Close',
-  position: any = "bottom",
+  position: 'top' | 'bottom' | 'middle' = "bottom",
   textStart: any = "",
   options = null,
   duration: number = null) {

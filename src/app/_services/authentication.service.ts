@@ -5,9 +5,6 @@ import jwt_decode from "jwt-decode";
 import {environment} from "../../environments/environment";
 import {Router} from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ToastController } from '@ionic/angular';
-import { Deliverer } from '@app/_models/deliverer';
-import { User } from '@app/_models/user';
 import { ActionsService } from './actions.service';
 
 @Injectable({
@@ -29,9 +26,6 @@ export class AuthenticationService {
     this.headers = new HttpHeaders({
         'Content-Type': 'application/json'
     });
-
-    if(localStorage.getItem("currentToken"))
-      console.warn("localStorage.getItem(currentToken)", JSON.parse(localStorage.getItem("currentToken")));
     
     if (this.currentTokenSubject.value?.token) {
       this.headers = new HttpHeaders({
@@ -53,8 +47,7 @@ export class AuthenticationService {
     if (!environment.production)
       console.log("optionRequete", optionRequete);
 
-    // return this.http.post<any>(`${environment.apiUrl}/authentication_token`, { email, password }, optionRequete)
-    return this.http.post<any>(`${environment.apiUrl}/api/login_check`, { email, password }, optionRequete)
+      return this.http.post<any>(`${environment.apiUrl}/api/login_check`, { email, password }, optionRequete)
       .pipe(
         map((user : any) => {
           console.log("user",user);
@@ -75,7 +68,6 @@ export class AuthenticationService {
     const jwtDecode: any = jwt_decode(user.token);
     console.log("jwtDecode", jwtDecode);
     
-    // localStorage.setItem('currentUser', JSON.stringify(user));
     if (jwtDecode.username) {
       // USER Account
       localStorage.setItem('username', jwtDecode.username);
@@ -83,15 +75,12 @@ export class AuthenticationService {
 
     if (jwtDecode.roles) {
       const roles = jwtDecode.roles;
-      if (
-          roles.indexOf('ROLE_SUPER_ADMIN') !== -1
-          || roles.indexOf('ROLE_DELIVERER') !== -1
-      ) {
+      if ( roles.indexOf('ROLE_SUPER_ADMIN') !== -1
+          || roles.indexOf('ROLE_DELIVERER') !== -1 ) {
         // add icon and restaurant
         localStorage.setItem('roles', JSON.stringify(roles));
         this.actionsService.presentToastWithOptions("",'log-in',"Vous êtes connecté", "top","",null,2000);
         return true;
-        // this.currentRolesSubject.next(roles);
       }
       this.actionsService.presentToastWithOptions("", 'log-out', "Vous n'avez pas de profil Livreur", "top","",null,2000);
       localStorage.clear();
@@ -101,7 +90,6 @@ export class AuthenticationService {
   }
 
   public setDelivererStatus(status: boolean): Observable<any> {
-    // const token = JSON.parse(localStorage.getItem('currentUser'));
     this.headers = new HttpHeaders({
       'Content-Type': 'application/json; charset=utf-8'
     });
