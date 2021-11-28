@@ -39,7 +39,7 @@ export class PendingOrdersPage implements OnInit, OnDestroy {
       // get Orders awaiting delivery
       this.deliverer = delivererCurrent;
       this.orders = this.deliverer?.orders ?? new Array();
-      // this.orders = this.orders.sort( (a,b) => b-a);
+      this.orders = this.orders.sort( (a,b) => a.id-b.id);
       // this.orders = this.orders.filter(x => x == 0);
       console.log("order", this.orders);
     });
@@ -51,6 +51,12 @@ export class PendingOrdersPage implements OnInit, OnDestroy {
         console.log(delivererCurrent);
         this.deliverer = delivererCurrent;
         this.orders = this.deliverer?.orders ?? new Array();
+        try {
+          this.orders = this.orders.sort( (a,b) => a.id-b.id);
+        }
+        catch (err) {
+          console.log(err)
+        }
       });
     });
     setTimeout(() => {

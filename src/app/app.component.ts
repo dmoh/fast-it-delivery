@@ -136,7 +136,7 @@ export class AppComponent implements OnInit {
           console.log("urlSector", urlSector);
 
           // this.firebase.clearAllNotifications();
-          this.actionsService.presentToastWithOptions("","", 'Reception notification: ' + urlSector.trim().replace('/',' '), "bottom","",2000);
+          this.actionsService.presentToastWithOptions("","", 'Commande secteur: ' + urlSector.trim().replace('/',' '), "bottom","",1000);
           this.router.navigate([urlSector]);
         }
       },
